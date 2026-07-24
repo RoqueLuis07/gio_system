@@ -8,7 +8,6 @@ import { renderCRM } from './ui/crm.js';
 import { renderExportView } from './ui/exportar.js';
 import { renderParametros } from './ui/parametros.js';
 import { renderPerfil } from './ui/auth.js';
-import { renderUsuarios } from './ui/usuarios.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 
 export async function renderAll() {
@@ -24,7 +23,6 @@ export async function renderAll() {
 
   renderPerfil();
   renderParametros();
-  renderUsuarios();
 
   document.getElementById('stat-ganancia').textContent = fmt(state.ventas.reduce((s, v) => s + v.comision, 0));
   document.getElementById('stat-monto-total').textContent = fmt(state.ventas.reduce((s, v) => s + v.monto, 0));

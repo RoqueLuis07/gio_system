@@ -73,11 +73,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
       Mi Perfil / Seguridad
     </button>
-    <button class="navbtn" data-view="usuarios" id="nav-usuarios" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-      Usuarios (Superadmin)
-    </button>
-
     <div class="sidebar-foot">
       <button class="btn secondary wide btn-sm" id="logout-btn">🔒 Cerrar Sesión</button>
     </div>
@@ -207,37 +202,6 @@
         </div>
         <button class="btn wide" id="prof-save-btn" style="margin-top:10px;">💾 Guardar Cambios de Perfil</button>
       </div>
-    </section>
-
-    <!-- USUARIOS (SOLO SUPERADMIN) -->
-    <section class="view" id="view-usuarios">
-      <h1 class="pagetitle">Gestión de Usuarios</h1>
-      <p class="subtitle">Administra los usuarios del sistema y su categoría de acceso (rol).</p>
-
-      <div class="form-card">
-        <h3>➕ Nuevo Usuario</h3>
-        <div class="form-row cols3" style="margin-top:12px;">
-          <div>
-            <label>Nombre de Usuario</label>
-            <input id="usr-nombre" placeholder="Ej. Vendedor Sucursal Centro" />
-          </div>
-          <div>
-            <label>Contraseña</label>
-            <input id="usr-pass" type="text" placeholder="Contraseña de acceso" />
-          </div>
-          <div>
-            <label>Categoría / Rol</label>
-            <select id="usr-rol">
-              <option value="vendedor">Vendedor</option>
-              <option value="superadmin">Superadmin</option>
-            </select>
-          </div>
-        </div>
-        <button class="btn wide" id="usr-submit">Crear Usuario</button>
-      </div>
-
-      <div class="section-label">Usuarios del Sistema <span class="hint">Solo visible para el rol Superadmin</span></div>
-      <div class="table-wrap" id="usr-table"></div>
     </section>
 
     <!-- WHATSAPP PRO / PLANTILLAS -->

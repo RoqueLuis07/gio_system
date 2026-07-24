@@ -35,11 +35,10 @@ Contiene toda la lógica de negocio, validaciones y persistencia de datos:
 
 ### Usuarios y roles
 
-El sistema soporta múltiples usuarios con una **categoría (rol)**: `vendedor` o `superadmin`.
+El backend soporta múltiples usuarios con una **categoría (rol)**: `vendedor` o `superadmin`, vía `/api/usuarios` (CRUD completo, con protección para no quedar nunca sin superadmin).
 
 - Al arrancar, el backend crea (o actualiza) automáticamente un usuario **superadmin** a partir de las variables de entorno `ADMIN_USER` / `ADMIN_PASS`.
-- El superadmin ve una sección adicional **"Usuarios (Superadmin)"** en el menú, donde puede crear, editar (nombre, contraseña, rol) y eliminar usuarios. No se permite eliminar/degradar al último superadmin del sistema.
-- Queda como base para futuras iteraciones: permisos más granulares por categoría (por ejemplo, restringir vistas o acciones específicas según el rol del vendedor).
+- Por ahora **no hay una vista en el frontend** para gestionar usuarios (se retiró del menú a pedido); queda como base de API lista para conectar una UI de administración en una próxima iteración.
 - Se conserva el usuario demo original (`GM Ventas` / `1908GM`, rol `vendedor`) para no romper el acceso existente.
 
 ### Cómo ejecutarlo
