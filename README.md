@@ -94,11 +94,12 @@ Si se prefiere servirlo por separado (por ejemplo con `npx serve frontend`), las
 
 ## Despliegue en Railway
 
-1. Crear un nuevo servicio en Railway apuntando a este repositorio, rama `main`.
-2. **Root Directory**: `backend` (Railway detecta `package.json` y usa `npm start` como comando de arranque; `npm install` corre automáticamente).
-3. Configurar las variables de entorno del servicio: `ADMIN_USER`, `ADMIN_PASS` y, si se agrega un Volume, `DATA_PATH` apuntando a un archivo dentro de ese Volume (ej. `/data/db.json`). `PORT` la define Railway automáticamente, no hace falta configurarla.
-4. (Recomendado) Agregar un **Volume** montado en `/data` para que los diplomados, ventas, usuarios, etc. sobrevivan a los redeploys — sin volumen, el almacenamiento por defecto (`backend/.data/db.json`) se reinicia con el seed original en cada despliegue.
-5. Desplegar. El backend sirve también el frontend, por lo que la URL pública de Railway ya expone la aplicación completa.
+El repositorio incluye `package.json` y `railway.json` en la **raíz** para que Railway pueda construir y arrancar el proyecto automáticamente sin configuración manual de "Root Directory" (Railpack detecta Node a partir del `package.json` raíz, instala las dependencias de `backend/` vía `buildCommand` y arranca con `npm start`, que delega en `backend/server.js`).
+
+1. Crear un nuevo servicio en Railway apuntando a este repositorio, rama `main` (Root Directory = raíz del repo, sin cambios).
+2. Configurar las variables de entorno del servicio: `ADMIN_USER`, `ADMIN_PASS` y, si se agrega un Volume, `DATA_PATH` apuntando a un archivo dentro de ese Volume (ej. `/data/db.json`). `PORT` la define Railway automáticamente, no hace falta configurarla.
+3. (Recomendado) Agregar un **Volume** montado en `/data` para que los diplomados, ventas, usuarios, etc. sobrevivan a los redeploys — sin volumen, el almacenamiento por defecto (`backend/.data/db.json`) se reinicia con el seed original en cada despliegue.
+4. Desplegar. El backend sirve también el frontend, por lo que la URL pública de Railway ya expone la aplicación completa.
 
 ## Funcionalidades
 
