@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>CRM &amp; Suite de Ventas Pro — GM Ventas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- PANTALLA DE LOGIN -->
+<div id="login-overlay">
+  <div class="login-card">
+    <div class="brand" style="justify-content:center; margin-bottom:10px;"><span class="seal"></span> GM Ventas Pro</div>
+    <h2>Acceso al Sistema</h2>
+    <div style="text-align:left; margin-bottom:12px;">
+      <label>Usuario</label>
+      <input id="login-user-input" value="GM Ventas" style="margin-top:4px;" />
+    </div>
+    <div style="text-align:left; margin-bottom:20px;">
+      <label>Contraseña</label>
+      <input id="login-pass-input" type="password" value="1908GM" style="margin-top:4px;" />
+    </div>
+    <button class="btn wide" id="login-btn">🔓 Iniciar Sesión</button>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><span class="seal"></span> Panel Ventas Pro</div>
+
+    <button class="navbtn active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="7" width="4" height="13"/><rect x="17" y="3" width="4" height="17"/></svg>
+      Panel general
+    </button>
+    <button class="navbtn" data-view="crm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 11l-3 3L17 12"/></svg>
+      CRM / Prospectos
+    </button>
+    <button class="navbtn" data-view="ventas">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+      Ventas Registradas
+    </button>
+    <button class="navbtn" data-view="whatsapp">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      WhatsApp Pro / Mensajería
+    </button>
+    <button class="navbtn" data-view="exportar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Exportar Base Alumnos
+    </button>
+    <button class="navbtn" data-view="recordatorios">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+      Recordatorios
+    </button>
+    <button class="navbtn" data-view="calculadora">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="8" y1="6" x2="16" y2="6"/><path d="M8 10h.01M12 10h.01M16 10h.01M8 14h.01M12 14h.01M8 18h.01M12 18h.01"/></svg>
+      Calculadora &amp; Cuotas
+    </button>
+    <button class="navbtn" data-view="productos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
+      Diplomados &amp; Carga Masiva
+    </button>
+    <button class="navbtn" data-view="parametros">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      Configuración / Parámetros
+    </button>
+    <button class="navbtn" data-view="perfil">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Mi Perfil / Seguridad
+    </button>
+    <button class="navbtn" data-view="usuarios" id="nav-usuarios" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Usuarios (Superadmin)
+    </button>
+
+    <div class="sidebar-foot">
+      <button class="btn secondary wide btn-sm" id="logout-btn">🔒 Cerrar Sesión</button>
+    </div>
+  </aside>
+
+  <main>
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="welcome-widget">
+        <div>
+          <div class="welcome-greeting" id="welcome-greeting">¡Hola!</div>
+          <div class="welcome-sub">Resumen ejecutivo y estado de metas de ventas.</div>
+        </div>
+        <div class="weather-clock">
+          <div class="weather-box">☀️ 28°C · Parcialmente Nublado</div>
+          <div class="clock-box" id="live-clock">00:00:00</div>
+        </div>
+      </div>
+
+      <div class="dash-alert-box" id="dash-alert-container">
+        <div>
+          <div class="dash-alert-title">🔔 Recordatorios Prioritarios Pendientes</div>
+          <div id="dash-alert-text" style="font-size:13px; color:var(--text-dim);">Cargando pendientes...</div>
+        </div>
+        <button class="btn secondary btn-sm" data-goto-view="recordatorios">Ver Todos</button>
+      </div>
+
+      <div class="hero-grid">
+        <div class="stat-card">
+          <div class="stat-label">Comisión Total Acumulada</div>
+          <div class="stat-value gold mono" id="stat-ganancia">₲ 0</div>
+          <div class="stat-sub">Tus ganancias acumuladas</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Total Recaudado</div>
+          <div class="stat-value mono" id="stat-monto-total">₲ 0</div>
+          <div class="stat-sub">Monto global de ingresos</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ventas Totales</div>
+          <div class="stat-value teal mono" id="stat-ventas">0</div>
+          <div class="stat-sub">Inscripciones cerradas</div>
+        </div>
+      </div>
+
+      <div class="section-label">Metas de Diplomados <span class="hint">Progreso global de inscripciones</span></div>
+      <div class="cards-grid" id="dash-cards"></div>
+
+      <div class="section-label">Últimas Inscripciones Registradas</div>
+      <div class="table-wrap" id="dash-recent"></div>
+    </section>
+
+    <!-- PRODUCTOS Y CARGA MASIVA -->
+    <section class="view" id="view-productos">
+      <h1 class="pagetitle">Gestión de Diplomados</h1>
+      <p class="subtitle">Añade diplomados y realiza cargas masivas de alumnos.</p>
+
+      <div class="form-card">
+        <h3>➕ Crear Nuevo Diplomado</h3>
+        <div class="form-row cols3" style="margin-top:12px;">
+          <div>
+            <label>Nombre del diplomado</label>
+            <input id="p-nombre" placeholder="Ej. Diplomado en Inteligencia Artificial" />
+          </div>
+          <div>
+            <label>Precio Estándar (₲)</label>
+            <input id="p-precio" class="mono-input" placeholder="Ej. 1.200.000" />
+          </div>
+          <div>
+            <label>Meta de alumnos</label>
+            <input id="p-meta" class="mono-input" type="number" placeholder="Ej. 20" />
+          </div>
+        </div>
+        <div class="form-row cols3">
+          <div>
+            <label>% Comisión base (Defecto: 8.5%)</label>
+            <input id="p-valor" class="mono-input" type="number" step="0.1" value="8.5" />
+          </div>
+          <div></div>
+          <div style="display:flex; align-items:flex-end;">
+            <button class="btn wide" id="p-submit">Añadir Diplomado</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card" style="border-color:var(--teal);">
+        <h3 style="color:var(--teal); margin-top:0;">📥 Carga Masiva de Alumnos (CSV / Texto)</h3>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:14px;">Pega una lista de alumnos separados por comas. Formato por línea: <br><code>Nombre, Teléfono, Empresa, Monto</code></p>
+
+        <div class="form-row cols2">
+          <div>
+            <label>Seleccionar Diplomado para la Carga</label>
+            <select id="csv-diplomado-select"></select>
+          </div>
+          <div>
+            <label>Monto por Defecto (si no se especifica en la lista)</label>
+            <input id="csv-default-monto" class="mono-input" placeholder="Ej. 1.200.000" />
+          </div>
+        </div>
+
+        <label>Lista de Alumnos (Pega aquí tus datos)</label>
+        <textarea id="csv-text-input" placeholder="Juan Pérez, 0981123456, Banco Itaú, 1200000&#10;María González, 0982555666, Particular, 1200000"></textarea>
+
+        <button class="btn wa wide" id="csv-process-btn" style="margin-top:12px;">🚀 Cargar Todos los Alumnos en Masa</button>
+      </div>
+
+      <div class="section-label">Diplomados en Oferta</div>
+      <div class="cards-grid" id="productos-cards"></div>
+    </section>
+
+    <!-- MI PERFIL -->
+    <section class="view" id="view-perfil">
+      <h1 class="pagetitle">Mi Perfil y Seguridad</h1>
+      <p class="subtitle">Actualiza tu nombre de usuario y tu contraseña de acceso.</p>
+
+      <div class="form-card">
+        <h3>👤 Configuración de Cuenta</h3>
+        <div class="form-row cols2" style="margin-top:14px;">
+          <div>
+            <label>Nombre de Usuario / Vendedor</label>
+            <input id="prof-user" value="GM Ventas" />
+          </div>
+          <div>
+            <label>Nueva Contraseña</label>
+            <input id="prof-pass" type="text" placeholder="Ingresa la nueva contraseña" />
+          </div>
+        </div>
+        <button class="btn wide" id="prof-save-btn" style="margin-top:10px;">💾 Guardar Cambios de Perfil</button>
+      </div>
+    </section>
+
+    <!-- USUARIOS (SOLO SUPERADMIN) -->
+    <section class="view" id="view-usuarios">
+      <h1 class="pagetitle">Gestión de Usuarios</h1>
+      <p class="subtitle">Administra los usuarios del sistema y su categoría de acceso (rol).</p>
+
+      <div class="form-card">
+        <h3>➕ Nuevo Usuario</h3>
+        <div class="form-row cols3" style="margin-top:12px;">
+          <div>
+            <label>Nombre de Usuario</label>
+            <input id="usr-nombre" placeholder="Ej. Vendedor Sucursal Centro" />
+          </div>
+          <div>
+            <label>Contraseña</label>
+            <input id="usr-pass" type="text" placeholder="Contraseña de acceso" />
+          </div>
+          <div>
+            <label>Categoría / Rol</label>
+            <select id="usr-rol">
+              <option value="vendedor">Vendedor</option>
+              <option value="superadmin">Superadmin</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn wide" id="usr-submit">Crear Usuario</button>
+      </div>
+
+      <div class="section-label">Usuarios del Sistema <span class="hint">Solo visible para el rol Superadmin</span></div>
+      <div class="table-wrap" id="usr-table"></div>
+    </section>
+
+    <!-- WHATSAPP PRO / PLANTILLAS -->
+    <section class="view" id="view-whatsapp">
+      <h1 class="pagetitle">WhatsApp Pro — Plantillas y Mensajería</h1>
+      <p class="subtitle">Gestiona plantillas avanzadas y envía mensajes personalizados.</p>
+
+      <div class="form-card">
+        <h3>📲 Enviar Mensaje Personalizado</h3>
+        <div class="form-row cols2" style="margin-top:12px;">
+          <div>
+            <label>Seleccionar Alumno / Cliente de la Base</label>
+            <select id="wa-cliente-select"><option value="">— Cargar desde ventas —</option></select>
+          </div>
+          <div>
+            <label>Plantilla de Mensaje</label>
+            <select id="wa-plantilla-select"></select>
+          </div>
+        </div>
+
+        <div class="form-row cols2">
+          <div>
+            <label>Nombre del Contacto</label>
+            <input id="wa-nombre" placeholder="Ej. Juan Pérez" />
+          </div>
+          <div>
+            <label>Teléfono (WhatsApp)</label>
+            <input id="wa-telefono" placeholder="Ej. 0981 123 456" />
+          </div>
+        </div>
+
+        <label>Vista previa del mensaje (Variables automáticas: {nombre}, {diplomado})</label>
+        <textarea id="wa-preview" style="min-height:110px;"></textarea>
+
+        <div style="margin-top:14px; display:flex; gap:10px;">
+          <button class="btn wa wide" id="wa-send-btn">🚀 Abrir WhatsApp y Enviar</button>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h3>📝 Administrar y Crear Plantillas</h3>
+        <div class="form-row cols2" style="margin-top:12px;">
+          <div>
+            <label>Título / Nombre de la Plantilla</label>
+            <input id="tpl-titulo" placeholder="Ej. Recordatorio de Pago" />
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button class="btn wide" id="tpl-add-btn">➕ Guardar Nueva Plantilla</button>
+          </div>
+        </div>
+        <label>Cuerpo de la Plantilla</label>
+        <textarea id="tpl-cuerpo" placeholder="¡Hola {nombre}! Te recordamos el inicio de {diplomado}..."></textarea>
+      </div>
+
+      <div class="section-label">Plantillas Guardadas <span class="hint">Edita o elimina tus plantillas existentes</span></div>
+      <div class="table-wrap" id="tpl-table"></div>
+    </section>
+
+    <!-- VENTAS -->
+    <section class="view" id="view-ventas">
+      <h1 class="pagetitle">Ventas y Registro de Clientes</h1>
+      <p class="subtitle">Registra una nueva venta individual.</p>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div>
+            <label>Diplomado *</label>
+            <select id="v-producto"></select>
+          </div>
+          <div>
+            <label>Cliente *</label>
+            <input id="v-cliente" placeholder="Ej. Miguel Duré" />
+          </div>
+          <div>
+            <label>Teléfono (WhatsApp)</label>
+            <input id="v-telefono" placeholder="Ej. 0981 123 456" />
+          </div>
+          <div>
+            <label>Fecha</label>
+            <input id="v-fecha" type="date" />
+          </div>
+        </div>
+
+        <div class="form-row cols3">
+          <div>
+            <label>Empresa</label>
+            <input id="v-empresa" placeholder="Particular / Banco..." />
+          </div>
+          <div>
+            <label>Cargo</label>
+            <select id="v-cargo"></select>
+          </div>
+          <div>
+            <label>Método de Pago</label>
+            <select id="v-metodo-pago"></select>
+          </div>
+        </div>
+
+        <div class="form-row cols3">
+          <div>
+            <label>Monto venta (₲) *</label>
+            <input id="v-monto" class="mono-input" placeholder="0" />
+          </div>
+          <div>
+            <label>Comisión (%)</label>
+            <input id="v-porcentaje" class="mono-input" type="number" step="0.1" value="8.5" />
+          </div>
+          <div>
+            <label>Comisión a cobrar</label>
+            <div style="background:var(--surface-3); padding:10px; border-radius:8px; border:1px solid var(--border);"><span class="amt-gold" id="v-comision-preview">₲ 0</span></div>
+          </div>
+        </div>
+        <button class="btn wide" id="v-submit">✨ Registrar Venta Individual</button>
+      </div>
+
+      <div class="section-label">Historial de Ventas</div>
+      <div class="table-wrap" id="ventas-table"></div>
+    </section>
+
+    <!-- CRM / PROSPECTOS -->
+    <section class="view" id="view-crm">
+      <h1 class="pagetitle">CRM — Pipeline de Prospectos</h1>
+      <p class="subtitle">Gestiona potenciales alumnos.</p>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div><label>Nombre Prospecto *</label><input id="crm-nombre" placeholder="Ej. Ana Martínez" /></div>
+          <div><label>Teléfono</label><input id="crm-telefono" placeholder="Ej. 0981 555 666" /></div>
+          <div><label>Diplomado Interés *</label><select id="crm-producto"></select></div>
+          <div>
+            <label>Estado</label>
+            <select id="crm-estado">
+              <option value="nuevo">Nuevo</option>
+              <option value="negociacion">En Negociación</option>
+              <option value="ganado">Ganado</option>
+              <option value="perdido">Perdido</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn wide" id="crm-submit">➕ Agregar Prospecto</button>
+      </div>
+      <div class="section-label">Lista de Prospectos</div>
+      <div class="table-wrap" id="crm-table"></div>
+    </section>
+
+    <!-- EXPORTAR -->
+    <section class="view" id="view-exportar">
+      <h1 class="pagetitle">Visualización y Exportación de Alumnos</h1>
+      <p class="subtitle">Filtra por diplomado para ver la lista completa en filas y exportar a CSV.</p>
+
+      <div class="form-card">
+        <div class="form-row cols2">
+          <div>
+            <label>Seleccionar Diplomado para Visualizar</label>
+            <select id="exp-diplomado-select"></select>
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <button class="btn wide" id="exp-download-btn">⬇️ Descargar Base CSV</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Alumnos Inscritos <span class="hint" id="exp-cant-label">0 Registros encontrados</span></div>
+      <div class="table-wrap" id="exp-preview-table"></div>
+    </section>
+
+    <!-- RECORDATORIOS -->
+    <section class="view" id="view-recordatorios">
+      <h1 class="pagetitle">Gestión de Recordatorios</h1>
+      <p class="subtitle">Agenda avisos de llamadas, seguimientos o cobros pendientes.</p>
+
+      <div class="form-card">
+        <h3>➕ Nuevo Recordatorio</h3>
+        <div class="form-row cols3" style="margin-top:12px;">
+          <div><label>Título / Tarea *</label><input id="rec-titulo" placeholder="Ej. Llamar para confirmar inscripción" /></div>
+          <div><label>Fecha Compromiso *</label><input id="rec-fecha" type="date" /></div>
+          <div><label>Cliente / Contacto</label><input id="rec-cliente" placeholder="Ej. María González - 0981 123 456" /></div>
+        </div>
+        <button class="btn wide" id="rec-submit">🔔 Programar Recordatorio</button>
+      </div>
+
+      <div class="section-label">Lista de Pendientes y Compromisos</div>
+      <div class="table-wrap" id="rec-table"></div>
+    </section>
+
+    <!-- MODAL DETALLE RECORDATORIO (COMENTARIOS + IMAGEN) -->
+    <div id="rec-modal-overlay" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.65); z-index:9998; align-items:center; justify-content:center;">
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:26px; width:100%; max-width:460px; max-height:85vh; overflow-y:auto;">
+        <h3 style="margin-top:0; font-family:'Fraunces', serif; color:var(--gold);" id="rec-modal-titulo">Detalle del Recordatorio</h3>
+        <p class="subtitle" id="rec-modal-info" style="margin-bottom:16px;"></p>
+
+        <label>Comentario</label>
+        <textarea id="rec-modal-comentario" placeholder="Escribe un comentario sobre este recordatorio..."></textarea>
+
+        <div style="margin-top:14px;">
+          <label>Imagen Adjunta</label>
+          <input type="file" id="rec-modal-imagen-input" accept="image/*" />
+          <div id="rec-modal-imagen-preview" style="margin-top:10px;"></div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:20px;">
+          <button class="btn wide" id="rec-modal-guardar-btn">💾 Guardar</button>
+          <button class="btn secondary wide" id="rec-modal-cerrar-btn">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULADORA DE COMISIONES -->
+    <section class="view" id="view-calculadora">
+      <h1 class="pagetitle">Calculadora de Cuotas y Comisiones</h1>
+      <p class="subtitle">Simulación de financiación e impacto de comisiones en tiempo real.</p>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div><label>Monto Total (₲)</label><input id="c-monto" class="mono-input" value="1.200.000" /></div>
+          <div><label>Comisión Vendedor (%)</label><input id="c-porcentaje" class="mono-input" type="number" step="0.1" value="8.5" /></div>
+          <div><label>Descuento Cliente (%)</label><input id="c-descuento" class="mono-input" type="number" step="0.1" value="0" /></div>
+          <div><label>Cantidad de Cuotas</label><input id="c-cuotas" class="mono-input" type="number" value="1" min="1" /></div>
+        </div>
+      </div>
+
+      <div class="hero-grid">
+        <div class="stat-card">
+          <div class="stat-label">Valor por Cuota</div>
+          <div class="stat-value teal mono" id="calc-val-cuota">₲ 0</div>
+          <div class="stat-sub">Monto exacto por cada cuota (con descuento aplicado)</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Comisión Total a Cobrar</div>
+          <div class="stat-value gold mono" id="calc-val-comision">₲ 0</div>
+          <div class="stat-sub">Tu ganancia sobre esta venta</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Descuento Aplicado</div>
+          <div class="stat-value mono" id="calc-val-descuento" style="color:var(--red);">₲ 0</div>
+          <div class="stat-sub">Monto descontado al cliente</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONFIGURACIÓN -->
+    <section class="view" id="view-parametros">
+      <h1 class="pagetitle">Parámetros del Sistema</h1>
+      <p class="subtitle">Configuraciones globales.</p>
+      <div class="form-card">
+        <h3>💳 Métodos de Pago Habilitados (Uno por línea)</h3>
+        <textarea id="param-metodos-pago"></textarea>
+        <h3 style="margin-top:16px;">💼 Cargos Frecuentes (Uno por línea)</h3>
+        <textarea id="param-cargos"></textarea>
+        <button class="btn wide" id="param-save-btn" style="margin-top:16px;">💾 Guardar Parámetros</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script type="module" src="js/main.js"></script>
+</body>
+</html>
