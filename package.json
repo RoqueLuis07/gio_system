@@ -1,0 +1,9 @@
+{
+  "name": "gio-system",
+  "private": true,
+  "description": "GM Ventas Pro — backend (API) y frontend (UI) del sistema. Punto de entrada raíz usado por plataformas de despliegue (Railway) que construyen desde la raíz del repositorio.",
+  "scripts": {
+    "install:backend": "npm install --prefix backend",
+    "start": "npm start --prefix backend"
+  }
+}
