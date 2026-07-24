@@ -4,6 +4,7 @@ const router = Router();
 
 router.use('/state', require('./state.routes'));
 router.use('/auth', require('./auth.routes'));
+router.use('/usuarios', require('./usuarios.routes'));
 router.use('/productos', require('./productos.routes'));
 router.use('/ventas', require('./ventas.routes'));
 router.use('/prospectos', require('./prospectos.routes'));

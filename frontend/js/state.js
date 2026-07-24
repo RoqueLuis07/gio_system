@@ -1,5 +1,6 @@
 export const state = {
-  usuario: { nombre: 'GM Ventas' },
+  usuario: null,
+  usuarios: [],
   productos: [],
   ventas: [],
   prospectos: [],
@@ -9,7 +10,6 @@ export const state = {
 };
 
 export function applyState(data) {
-  state.usuario = data.usuario;
   state.productos = data.productos;
   state.ventas = data.ventas;
   state.prospectos = data.prospectos;

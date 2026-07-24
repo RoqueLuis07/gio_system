@@ -2,6 +2,8 @@ import { api } from '../api.js';
 import { state } from '../state.js';
 import { showToast } from '../toast.js';
 import { updateClockAndGreeting } from './clock.js';
+import { refreshUsuariosVisibility } from './usuarios.js';
+import { renderAll } from '../render.js';
 
 export function initAuth() {
   document.getElementById('login-btn').addEventListener('click', async () => {
@@ -12,24 +14,30 @@ export function initAuth() {
       const result = await api.login(u, p);
       state.usuario = result.usuario;
       document.getElementById('login-overlay').style.display = 'none';
+      await refreshUsuariosVisibility();
       updateClockAndGreeting();
-      showToast(`¡Bienvenido/a, ${u}!`);
+      await renderAll();
+      showToast(`¡Bienvenido/a, ${state.usuario.nombre}!`);
     } catch (err) {
       alert(err.message);
     }
   });
 
-  document.getElementById('logout-btn').addEventListener('click', () => {
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    state.usuario = null;
+    await refreshUsuariosVisibility();
     document.getElementById('login-overlay').style.display = 'flex';
   });
 
   document.getElementById('prof-save-btn').addEventListener('click', async () => {
+    if (!state.usuario) return;
     const u = document.getElementById('prof-user').value.trim();
     const p = document.getElementById('prof-pass').value.trim();
     if (!u || !p) return alert('Completa todos los campos');
 
     try {
-      state.usuario = await api.updateProfile(u, p);
+      const actualizado = await api.updateProfile(state.usuario.id, u, p);
+      state.usuario = { ...state.usuario, ...actualizado };
       updateClockAndGreeting();
       showToast('Perfil y clave actualizados correctamente.');
     } catch (err) {
@@ -39,5 +47,5 @@ export function initAuth() {
 }
 
 export function renderPerfil() {
-  document.getElementById('prof-user').value = state.usuario.nombre;
+  document.getElementById('prof-user').value = state.usuario ? state.usuario.nombre : '';
 }

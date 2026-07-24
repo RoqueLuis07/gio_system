@@ -13,6 +13,7 @@ import { initExportar } from './ui/exportar.js';
 import { initRecordatorios } from './ui/recordatorios.js';
 import { initCalculadora, calcularEnTiempoReal } from './ui/calculadora.js';
 import { initParametros } from './ui/parametros.js';
+import { initUsuarios } from './ui/usuarios.js';
 
 async function init() {
   document.getElementById('v-fecha').value = new Date().toISOString().slice(0, 10);
@@ -31,6 +32,7 @@ async function init() {
   initRecordatorios();
   initCalculadora();
   initParametros();
+  initUsuarios();
 
   try {
     const data = await api.getState();

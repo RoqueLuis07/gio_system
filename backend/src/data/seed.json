@@ -1,5 +1,7 @@
 {
-  "usuarioActivo": { "nombre": "GM Ventas", "pass": "1908GM" },
+  "usuarios": [
+    { "id": "u1", "nombre": "GM Ventas", "pass": "1908GM", "rol": "vendedor" }
+  ],
   "productos": [
     { "id": "p1", "nombre": "Diplomado en Inteligencia Artificial", "precio": 1200000, "meta": 20, "valor": 8.5 },
     { "id": "p2", "nombre": "Diplomado en Marketing Digital", "precio": 1000000, "meta": 15, "valor": 8.5 }

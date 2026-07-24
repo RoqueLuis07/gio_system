@@ -1,15 +1,29 @@
 const fs = require('fs');
 const path = require('path');
 
-const DB_PATH = path.join(__dirname, '..', 'data', 'db.json');
+const SEED_PATH = path.join(__dirname, '..', 'data', 'seed.json');
+
+function getDbPath() {
+  return process.env.DATA_PATH
+    ? path.resolve(process.env.DATA_PATH)
+    : path.join(__dirname, '..', '..', '.data', 'db.json');
+}
+
+function ensureDbFile() {
+  const dbPath = getDbPath();
+  const dir = path.dirname(dbPath);
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+  if (!fs.existsSync(dbPath)) fs.copyFileSync(SEED_PATH, dbPath);
+  return dbPath;
+}
 
 function readDb() {
-  const raw = fs.readFileSync(DB_PATH, 'utf-8');
-  return JSON.parse(raw);
+  const dbPath = ensureDbFile();
+  return JSON.parse(fs.readFileSync(dbPath, 'utf-8'));
 }
 
 function writeDb(db) {
-  fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf-8');
+  fs.writeFileSync(ensureDbFile(), JSON.stringify(db, null, 2), 'utf-8');
 }
 
 function getState() {

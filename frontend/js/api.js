@@ -20,7 +20,14 @@ export const api = {
   getState: () => request('GET', '/state'),
 
   login: (usuario, pass) => request('POST', '/auth/login', { usuario, pass }),
-  updateProfile: (nombre, pass) => request('PUT', '/auth/profile', { nombre, pass }),
+  updateProfile: (id, nombre, pass) => request('PUT', '/auth/profile', { id, nombre, pass }),
+
+  usuarios: {
+    list: () => request('GET', '/usuarios'),
+    create: (data) => request('POST', '/usuarios', data),
+    update: (id, data) => request('PUT', `/usuarios/${id}`, data),
+    remove: (id) => request('DELETE', `/usuarios/${id}`),
+  },
 
   productos: {
     create: (data) => request('POST', '/productos', data),

@@ -11,7 +11,7 @@ export function updateClockAndGreeting() {
   if (hrs >= 5 && hrs < 12) greeting = '¡Buenos días!';
   else if (hrs >= 12 && hrs < 19) greeting = '¡Buenas tardes!';
 
-  document.getElementById('welcome-greeting').textContent = `${greeting} ${state.usuario.nombre}`;
+  document.getElementById('welcome-greeting').textContent = state.usuario ? `${greeting} ${state.usuario.nombre}` : greeting;
 }
 
 export function initClock() {
