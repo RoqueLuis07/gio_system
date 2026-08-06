@@ -9,6 +9,7 @@ import { renderExportView } from './ui/exportar.js';
 import { renderParametros } from './ui/parametros.js';
 import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
+import { renderWaModuloOptions } from './ui/wa-modulo.js';
 
 export async function renderAll() {
   const pOptions = state.productos.map((p) => `<option value="${p.id}">${p.nombre}</option>`).join('');
@@ -37,4 +38,5 @@ export async function renderAll() {
   renderExportView();
   calcularEnTiempoReal();
   renderWaSelects();
+  renderWaModuloOptions();
 }

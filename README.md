@@ -16,7 +16,7 @@ Contiene toda la lógica de negocio, validaciones y persistencia de datos:
 - `src/app.js` — configuración de la app (middlewares, rutas, servido estático del frontend).
 - `src/routes/` — definición de endpoints REST.
 - `src/controllers/` — lógica de cada recurso (validaciones, cálculos de comisión, carga masiva CSV).
-- `src/services/storage.service.js` — persistencia en un archivo JSON (base de datos basada en archivo).
+- `src/services/storage.service.js` — persistencia en **Supabase (Postgres)** vía `@supabase/supabase-js`, mapeando entre los nombres camelCase que usa la app y las columnas snake_case de las tablas.
 - `src/services/bootstrap.service.js` — crea/actualiza el usuario **superadmin** a partir de variables de entorno cada vez que arranca el servidor.
 
 ### Endpoints principales
@@ -41,12 +41,16 @@ El backend soporta múltiples usuarios con una **categoría (rol)**: `vendedor` 
 - Por ahora **no hay una vista en el frontend** para gestionar usuarios (se retiró del menú a pedido); queda como base de API lista para conectar una UI de administración en una próxima iteración.
 - Se conserva el usuario demo original (`GM Ventas` / `1908GM`, rol `vendedor`) para no romper el acceso existente.
 
+### Base de datos (Supabase)
+
+Todos los datos (usuarios, diplomados, ventas, prospectos, recordatorios, plantillas, parámetros) viven en tablas Postgres de un proyecto Supabase — ya no hay ningún archivo JSON local. El backend se conecta con la **service_role key** (nunca la `anon`/`public`), que tiene permiso para saltar Row Level Security. Las tablas esperadas: `usuarios`, `productos`, `ventas`, `prospectos`, `recordatorios`, `plantillas`, `parametros` (una sola fila, `id = 1`).
+
 ### Cómo ejecutarlo
 
 ```bash
 cd backend
 npm install
-cp .env.example .env   # y completar ADMIN_USER / ADMIN_PASS
+cp .env.example .env   # completar SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, ADMIN_USER, ADMIN_PASS
 npm start              # http://localhost:4000
 ```
 
@@ -59,7 +63,8 @@ Ver `backend/.env.example`. Resumen:
 | Variable | Obligatoria | Descripción |
 |---|---|---|
 | `PORT` | No | Puerto del servidor. Railway la inyecta automáticamente. Por defecto `4000`. |
-| `DATA_PATH` | No (sí recomendada en Railway) | Ruta absoluta al archivo de datos persistente (ej. `/data/db.json` dentro de un Volume). Si se omite, se usa `backend/.data/db.json`, que **no persiste** entre despliegues en la mayoría de plataformas PaaS. |
+| `SUPABASE_URL` | **Sí** | URL del proyecto Supabase (Project Settings → API → Project URL). |
+| `SUPABASE_SERVICE_ROLE_KEY` | **Sí** | Clave secreta `service_role` (Project Settings → API). Nunca exponerla al frontend/navegador. |
 | `ADMIN_USER` | Recomendada | Nombre de usuario del superadmin. Por defecto `superadmin`. |
 | `ADMIN_PASS` | Recomendada | Contraseña del superadmin. Si no se define, se usa una contraseña por defecto insegura y el servidor lo advierte por consola — **definirla siempre en producción**. |
 
@@ -96,9 +101,8 @@ Si se prefiere servirlo por separado (por ejemplo con `npx serve frontend`), las
 El repositorio incluye `package.json` y `railway.json` en la **raíz** para que Railway pueda construir y arrancar el proyecto automáticamente sin configuración manual de "Root Directory" (Railpack detecta Node a partir del `package.json` raíz, instala las dependencias de `backend/` vía `buildCommand` y arranca con `npm start`, que delega en `backend/server.js`).
 
 1. Crear un nuevo servicio en Railway apuntando a este repositorio, rama `main` (Root Directory = raíz del repo, sin cambios).
-2. Configurar las variables de entorno del servicio: `ADMIN_USER`, `ADMIN_PASS` y, si se agrega un Volume, `DATA_PATH` apuntando a un archivo dentro de ese Volume (ej. `/data/db.json`). `PORT` la define Railway automáticamente, no hace falta configurarla.
-3. (Recomendado) Agregar un **Volume** montado en `/data` para que los diplomados, ventas, usuarios, etc. sobrevivan a los redeploys — sin volumen, el almacenamiento por defecto (`backend/.data/db.json`) se reinicia con el seed original en cada despliegue.
-4. Desplegar. El backend sirve también el frontend, por lo que la URL pública de Railway ya expone la aplicación completa.
+2. Configurar las variables de entorno del servicio: `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_USER`, `ADMIN_PASS`. `PORT` la define Railway automáticamente, no hace falta configurarla.
+3. Desplegar. El backend sirve también el frontend, por lo que la URL pública de Railway ya expone la aplicación completa. Como los datos viven en Supabase (no en el disco del contenedor), sobreviven a redeploys y reinicios sin necesidad de un Volume.
 
 ## Funcionalidades
 
@@ -106,7 +110,7 @@ El repositorio incluye `package.json` y `railway.json` en la **raíz** para que 
 - Gestión de diplomados (crear, editar, eliminar) y carga masiva de alumnos vía texto/CSV.
 - Registro y edición de ventas con cálculo automático de comisión.
 - CRM de prospectos con estados (nuevo, negociación, ganado, perdido).
-- Mensajería vía WhatsApp con plantillas personalizables ({nombre}, {diplomado}).
+- Mensajería vía WhatsApp con plantillas personalizables ({nombre}, {diplomado}), con dos vistas: "WhatsApp Pro / Mensajería" (selecciona clientes desde ventas) y "Módulo de Envíos WhatsApp" (editor de plantillas con modo nuevo/editar inline y adjunto de archivos). Ambas comparten las mismas plantillas persistidas en el backend.
 - Exportación de alumnos a CSV filtrando por diplomado.
 - Recordatorios con comentarios e imagen adjunta.
 - Calculadora de cuotas y comisiones en tiempo real.

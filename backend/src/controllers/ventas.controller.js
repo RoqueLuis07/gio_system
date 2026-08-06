@@ -48,61 +48,73 @@ function parseCsvLine(line, productoId, defaultMonto) {
 }
 
 module.exports = {
-  list(req, res) {
-    res.json(storage.getCollection('ventas'));
+  async list(req, res) {
+    try {
+      res.json(await storage.getCollection('ventas'));
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   },
 
-  create(req, res) {
+  async create(req, res) {
     try {
       const venta = { id: uid(), ...buildVenta(req.body) };
-      const ventas = storage.getCollection('ventas');
+      const ventas = await storage.getCollection('ventas');
       ventas.push(venta);
-      storage.setCollection('ventas', ventas);
+      await storage.setCollection('ventas', ventas);
       res.status(201).json(venta);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
   },
 
-  update(req, res) {
-    const ventas = storage.getCollection('ventas');
-    const idx = ventas.findIndex((v) => v.id === req.params.id);
-    if (idx === -1) return res.status(404).json({ error: 'No encontrado' });
-
+  async update(req, res) {
     try {
+      const ventas = await storage.getCollection('ventas');
+      const idx = ventas.findIndex((v) => v.id === req.params.id);
+      if (idx === -1) return res.status(404).json({ error: 'No encontrado' });
+
       const patch = buildVenta({ ...ventas[idx], ...req.body });
       ventas[idx] = { ...ventas[idx], ...patch };
-      storage.setCollection('ventas', ventas);
+      await storage.setCollection('ventas', ventas);
       res.json(ventas[idx]);
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
   },
 
-  remove(req, res) {
-    const ventas = storage.getCollection('ventas');
-    const next = ventas.filter((v) => v.id !== req.params.id);
-    if (next.length === ventas.length) return res.status(404).json({ error: 'No encontrado' });
-    storage.setCollection('ventas', next);
-    res.status(204).end();
+  async remove(req, res) {
+    try {
+      const ventas = await storage.getCollection('ventas');
+      const next = ventas.filter((v) => v.id !== req.params.id);
+      if (next.length === ventas.length) return res.status(404).json({ error: 'No encontrado' });
+      await storage.setCollection('ventas', next);
+      res.status(204).end();
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   },
 
-  bulkCreate(req, res) {
-    const { productoId, defaultMonto, texto } = req.body;
-    if (!productoId) return res.status(400).json({ error: 'Selecciona un diplomado para la carga.' });
-    if (!texto || !texto.trim()) return res.status(400).json({ error: 'Pega la lista de alumnos a cargar.' });
+  async bulkCreate(req, res) {
+    try {
+      const { productoId, defaultMonto, texto } = req.body;
+      if (!productoId) return res.status(400).json({ error: 'Selecciona un diplomado para la carga.' });
+      if (!texto || !texto.trim()) return res.status(400).json({ error: 'Pega la lista de alumnos a cargar.' });
 
-    const lines = texto.split('\n').map((l) => l.trim()).filter(Boolean);
-    const nuevas = lines
-      .map((line) => parseCsvLine(line, productoId, Number(defaultMonto) || 0))
-      .filter(Boolean)
-      .map((entry) => ({ id: uid(), ...entry }));
+      const lines = texto.split('\n').map((l) => l.trim()).filter(Boolean);
+      const nuevas = lines
+        .map((line) => parseCsvLine(line, productoId, Number(defaultMonto) || 0))
+        .filter(Boolean)
+        .map((entry) => ({ id: uid(), ...entry }));
 
-    if (nuevas.length === 0) return res.status(400).json({ error: 'No se encontraron alumnos válidos en el texto.' });
+      if (nuevas.length === 0) return res.status(400).json({ error: 'No se encontraron alumnos válidos en el texto.' });
 
-    const ventas = storage.getCollection('ventas');
-    ventas.push(...nuevas);
-    storage.setCollection('ventas', ventas);
-    res.status(201).json(nuevas);
+      const ventas = await storage.getCollection('ventas');
+      ventas.push(...nuevas);
+      await storage.setCollection('ventas', ventas);
+      res.status(201).json(nuevas);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   },
 };

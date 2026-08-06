@@ -4,9 +4,15 @@ const { ensureSuperadmin } = require('./src/services/bootstrap.service');
 
 const PORT = process.env.PORT || 4000;
 
-ensureSuperadmin();
-const app = createApp();
+async function main() {
+  await ensureSuperadmin();
+  const app = createApp();
+  app.listen(PORT, () => {
+    console.log(`GM Ventas Pro backend escuchando en http://localhost:${PORT}`);
+  });
+}
 
-app.listen(PORT, () => {
-  console.log(`GM Ventas Pro backend escuchando en http://localhost:${PORT}`);
+main().catch((err) => {
+  console.error('Error al iniciar el servidor:', err.message);
+  process.exit(1);
 });
