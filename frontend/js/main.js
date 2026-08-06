@@ -36,7 +36,7 @@ async function init() {
     const data = await api.getState();
     applyState(data);
   } catch (err) {
-    alert('No se pudo conectar con el servidor. Verifica que el backend esté en ejecución.');
+    alert(`No se pudo cargar el estado inicial desde el servidor.\n\nDetalle: ${err.message}`);
   }
 
   restoreSession();
