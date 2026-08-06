@@ -110,3 +110,41 @@ td{ padding:12px; font-size:13.5px; border-bottom:1px solid var(--border); }
   .welcome-widget{ flex-direction:column; align-items:flex-start; }
   .weather-clock{ text-align:left; }
 }
+
+/* ===== MÓDULO DE ENVÍOS WHATSAPP (diseño propio, escopado bajo .wa2-scope) ===== */
+.wa2-scope{
+  --wa2-bg-dark:#0f172a; --wa2-bg-card:#1e293b; --wa2-bg-card-hover:#334155; --wa2-border:#334155;
+  --wa2-text-main:#f8fafc; --wa2-text-muted:#94a3b8; --wa2-teal:#14b8a6;
+  --wa2-gold:#f59e0b; --wa2-gold-hover:#d97706; --wa2-danger:#ef4444; --wa2-danger-hover:#dc2626;
+  color: var(--wa2-text-main);
+}
+.wa2-scope .container{ width:100%; max-width:1100px; }
+.wa2-scope header{ margin-bottom:2rem; border-bottom:1px solid var(--wa2-border); padding-bottom:1rem; }
+.wa2-scope header h1{ font-size:1.5rem; font-weight:700; color:var(--wa2-teal); display:flex; align-items:center; gap:0.5rem; }
+.wa2-scope header p{ color:var(--wa2-text-muted); font-size:0.875rem; margin-top:0.25rem; }
+.wa2-scope .grid-2{ display:grid; grid-template-columns:repeat(auto-fit, minmax(320px, 1fr)); gap:1.5rem; }
+.wa2-scope .card{ background:var(--wa2-bg-card); border:1px solid var(--wa2-border); border-radius:12px; padding:1.5rem; }
+.wa2-scope .card-title{ font-size:1.1rem; font-weight:600; margin-bottom:1.25rem; color:var(--wa2-text-main); display:flex; align-items:center; gap:0.5rem; }
+.wa2-scope .form-group{ margin-bottom:1rem; }
+.wa2-scope .form-group label{ display:block; font-size:0.8rem; font-weight:600; color:var(--wa2-text-muted); text-transform:uppercase; margin-bottom:0.4rem; letter-spacing:0.05em; }
+.wa2-scope input, .wa2-scope select, .wa2-scope textarea{
+  width:100%; background:var(--wa2-bg-dark); border:1px solid var(--wa2-border);
+  color:var(--wa2-text-main); padding:0.75rem 1rem; border-radius:8px; font-size:0.9rem; transition:border-color 0.2s; font-family:'Inter', sans-serif;
+}
+.wa2-scope input:focus, .wa2-scope select:focus, .wa2-scope textarea:focus{ outline:none; border-color:var(--wa2-teal); }
+.wa2-scope input[type="file"]{ padding:0.5rem; cursor:pointer; font-size:0.85rem; }
+.wa2-scope .file-box-info{
+  background:var(--wa2-bg-dark); border:1px dashed var(--wa2-teal); border-radius:8px; padding:0.75rem 1rem; margin-top:0.5rem;
+  font-size:0.8rem; color:var(--wa2-text-muted); display:flex; align-items:center; justify-content:space-between;
+}
+.wa2-scope .btn{
+  background:var(--wa2-teal); color:#000; font-weight:600; border:none;
+  padding:0.75rem 1.25rem; border-radius:8px; cursor:pointer; transition:all 0.2s;
+  display:inline-flex; align-items:center; justify-content:center; gap:0.5rem; width:100%; font-family:'Inter', sans-serif; font-size:0.9rem;
+}
+.wa2-scope .btn:hover{ filter:brightness(1.1); }
+.wa2-scope .btn.secondary{ background:var(--wa2-bg-card-hover); color:var(--wa2-text-main); border:1px solid var(--wa2-border); }
+.wa2-scope .btn.gold{ background:var(--wa2-gold); color:#000; }
+.wa2-scope .btn.gold:hover{ background:var(--wa2-gold-hover); }
+.wa2-scope .btn.danger{ background:var(--wa2-danger); color:#fff; }
+.wa2-scope .btn.danger:hover{ background:var(--wa2-danger-hover); }

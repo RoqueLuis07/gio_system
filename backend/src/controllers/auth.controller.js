@@ -6,27 +6,35 @@ function sanitize(usuario) {
 }
 
 module.exports = {
-  login(req, res) {
-    const { usuario, pass } = req.body;
-    const usuarios = storage.getCollection('usuarios');
-    const match = usuarios.find((u) => u.nombre === usuario && u.pass === pass);
+  async login(req, res) {
+    try {
+      const { usuario, pass } = req.body;
+      const usuarios = await storage.getCollection('usuarios');
+      const match = usuarios.find((u) => u.nombre === usuario && u.pass === pass);
 
-    if (!match) return res.status(401).json({ success: false, error: 'Usuario o Contraseña incorrectos.' });
-    res.json({ success: true, usuario: sanitize(match) });
+      if (!match) return res.status(401).json({ success: false, error: 'Usuario o Contraseña incorrectos.' });
+      res.json({ success: true, usuario: sanitize(match) });
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
   },
 
-  updateProfile(req, res) {
-    const { id } = req.body;
-    const nombre = (req.body.nombre || '').trim();
-    const pass = (req.body.pass || '').trim();
-    if (!id || !nombre || !pass) return res.status(400).json({ error: 'Completa todos los campos' });
+  async updateProfile(req, res) {
+    try {
+      const { id } = req.body;
+      const nombre = (req.body.nombre || '').trim();
+      const pass = (req.body.pass || '').trim();
+      if (!id || !nombre || !pass) return res.status(400).json({ error: 'Completa todos los campos' });
 
-    const usuarios = storage.getCollection('usuarios');
-    const idx = usuarios.findIndex((u) => u.id === id);
-    if (idx === -1) return res.status(404).json({ error: 'Usuario no encontrado.' });
+      const usuarios = await storage.getCollection('usuarios');
+      const idx = usuarios.findIndex((u) => u.id === id);
+      if (idx === -1) return res.status(404).json({ error: 'Usuario no encontrado.' });
 
-    usuarios[idx] = { ...usuarios[idx], nombre, pass };
-    storage.setCollection('usuarios', usuarios);
-    res.json(sanitize(usuarios[idx]));
+      usuarios[idx] = { ...usuarios[idx], nombre, pass };
+      await storage.setCollection('usuarios', usuarios);
+      res.json(sanitize(usuarios[idx]));
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   },
 };
