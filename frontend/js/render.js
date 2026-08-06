@@ -3,7 +3,6 @@ import { fmt } from './format.js';
 import { renderProductosCards } from './ui/productos.js';
 import { renderVentasTable } from './ui/ventas.js';
 import { renderRecordatorios } from './ui/recordatorios.js';
-import { renderPlantillas, renderWaSelects } from './ui/whatsapp.js';
 import { renderCRM } from './ui/crm.js';
 import { renderExportView } from './ui/exportar.js';
 import { renderParametros } from './ui/parametros.js';
@@ -33,10 +32,8 @@ export async function renderAll() {
   renderProductosCards('productos-cards');
   renderVentasTable();
   renderRecordatorios();
-  renderPlantillas();
   renderCRM();
   renderExportView();
   calcularEnTiempoReal();
-  renderWaSelects();
   renderWaModuloOptions();
 }
