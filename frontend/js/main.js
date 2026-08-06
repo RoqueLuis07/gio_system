@@ -8,7 +8,6 @@ import { initClock } from './ui/clock.js';
 import { initProductos } from './ui/productos.js';
 import { initVentas } from './ui/ventas.js';
 import { initCrm } from './ui/crm.js';
-import { initWhatsapp } from './ui/whatsapp.js';
 import { initExportar } from './ui/exportar.js';
 import { initRecordatorios } from './ui/recordatorios.js';
 import { initCalculadora, calcularEnTiempoReal } from './ui/calculadora.js';
@@ -27,7 +26,6 @@ async function init() {
   initProductos();
   initVentas();
   initCrm();
-  initWhatsapp();
   initExportar();
   initRecordatorios();
   initCalculadora();

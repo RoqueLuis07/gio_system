@@ -84,7 +84,7 @@ frontend/
     ├── render.js          orquestador de renderizado (refresca toda la UI tras cada cambio)
     ├── toast.js            notificaciones
     ├── main.js             punto de entrada: inicializa módulos y carga el estado inicial
-    └── ui/                 un módulo por vista (auth, productos, ventas, crm, whatsapp,
+    └── ui/                 un módulo por vista (auth, productos, ventas, crm, wa-modulo,
                              exportar, recordatorios, calculadora, parametros, clock)
 ```
 
@@ -110,7 +110,7 @@ El repositorio incluye `package.json` y `railway.json` en la **raíz** para que 
 - Gestión de diplomados (crear, editar, eliminar) y carga masiva de alumnos vía texto/CSV.
 - Registro y edición de ventas con cálculo automático de comisión.
 - CRM de prospectos con estados (nuevo, negociación, ganado, perdido).
-- Mensajería vía WhatsApp con plantillas personalizables ({nombre}, {diplomado}), con dos vistas: "WhatsApp Pro / Mensajería" (selecciona clientes desde ventas) y "Módulo de Envíos WhatsApp" (editor de plantillas con modo nuevo/editar inline y adjunto de archivos). Ambas comparten las mismas plantillas persistidas en el backend.
+- Mensajería vía WhatsApp ("WhatsApp Envíos"): editor de plantillas con modo nuevo/editar inline, adjunto de archivos (copia automática al portapapeles para imágenes) y envío directo con variables {nombre}/{diplomado}.
 - Exportación de alumnos a CSV filtrando por diplomado.
 - Recordatorios con comentarios e imagen adjunta.
 - Calculadora de cuotas y comisiones en tiempo real.
