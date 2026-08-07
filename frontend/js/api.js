@@ -44,6 +44,7 @@ export const api = {
 
   prospectos: {
     create: (data) => request('POST', '/prospectos', data),
+    update: (id, data) => request('PUT', `/prospectos/${id}`, data),
     remove: (id) => request('DELETE', `/prospectos/${id}`),
   },
 

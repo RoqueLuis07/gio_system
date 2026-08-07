@@ -9,6 +9,26 @@ import { renderParametros } from './ui/parametros.js';
 import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
+import { renderTicker } from './ui/ticker.js';
+
+function updateMetaGauge() {
+  const circle = document.getElementById('meta-gauge-circle');
+  const pctEl = document.getElementById('meta-gauge-pct');
+  const labelEl = document.getElementById('meta-gauge-label');
+  if (!circle) return;
+
+  const totalMeta = state.productos.reduce((s, p) => s + (p.meta || 0), 0) || 1;
+  const totalAlumnos = state.ventas.length;
+  const pct = Math.max(0, Math.min(100, (totalAlumnos / totalMeta) * 100));
+
+  const r = 64;
+  const c = 2 * Math.PI * r;
+  circle.style.strokeDasharray = `${c}`;
+  circle.style.strokeDashoffset = `${c - (pct / 100) * c}`;
+
+  pctEl.textContent = `${Math.round(pct)}%`;
+  labelEl.textContent = `${totalAlumnos} / ${totalMeta} alumnos`;
+}
 
 export async function renderAll() {
   const pOptions = state.productos.map((p) => `<option value="${p.id}">${p.nombre}</option>`).join('');
@@ -27,6 +47,8 @@ export async function renderAll() {
   document.getElementById('stat-ganancia').textContent = fmt(state.ventas.reduce((s, v) => s + v.comision, 0));
   document.getElementById('stat-monto-total').textContent = fmt(state.ventas.reduce((s, v) => s + v.monto, 0));
   document.getElementById('stat-ventas').textContent = state.ventas.length;
+  document.getElementById('stat-diplomados').textContent = state.productos.length;
+  updateMetaGauge();
 
   renderProductosCards('dash-cards');
   renderProductosCards('productos-cards');
@@ -36,4 +58,5 @@ export async function renderAll() {
   renderExportView();
   calcularEnTiempoReal();
   renderWaModuloOptions();
+  renderTicker();
 }
