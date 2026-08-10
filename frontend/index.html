@@ -329,7 +329,7 @@
       <p class="subtitle">Registra una nueva venta individual.</p>
 
       <div class="form-card">
-        <div class="form-row">
+        <div class="form-row cols-wide4">
           <div>
             <label>Diplomado *</label>
             <select id="v-producto"></select>
@@ -348,18 +348,7 @@
           </div>
         </div>
 
-        <div class="form-row cols2">
-          <div>
-            <label>Cédula (CI)</label>
-            <input id="v-ci" class="mono-input" placeholder="Ej. 4.512.389" />
-          </div>
-          <div>
-            <label>Descuento Cliente (%)</label>
-            <input id="v-descuento" class="mono-input" type="number" step="0.1" value="0" />
-          </div>
-        </div>
-
-        <div class="form-row cols3">
+        <div class="form-row cols-wide3">
           <div>
             <label>Empresa</label>
             <input id="v-empresa" placeholder="Particular / Banco..." />
@@ -374,7 +363,15 @@
           </div>
         </div>
 
-        <div class="form-row cols3">
+        <div class="form-row">
+          <div>
+            <label>Cédula (CI)</label>
+            <input id="v-ci" class="mono-input" placeholder="Ej. 4.512.389" />
+          </div>
+          <div>
+            <label>Descuento Cliente (%)</label>
+            <input id="v-descuento" class="mono-input" type="number" step="0.1" value="0" />
+          </div>
           <div>
             <label>Monto venta (₲) *</label>
             <input id="v-monto" class="mono-input" placeholder="0" />
@@ -383,9 +380,12 @@
             <label>Comisión (%)</label>
             <input id="v-porcentaje" class="mono-input" type="number" step="0.1" value="8.5" />
           </div>
-          <div>
+        </div>
+
+        <div class="form-row">
+          <div class="comision-preview-box" style="grid-column:1/-1;">
             <label>Comisión a cobrar</label>
-            <div style="background:var(--surface-3); padding:10px; border-radius:8px; border:1px solid var(--border);"><span class="amt-gold" id="v-comision-preview">₲ 0</span></div>
+            <span class="amt-gold" id="v-comision-preview">₲ 0</span>
           </div>
         </div>
         <button class="btn wide" id="v-submit">✨ Registrar Venta Individual</button>
@@ -527,8 +527,7 @@
           </div>
         </div>
         <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
-          <button class="btn secondary" id="rep-export-diplomado-btn">📊 Exportar por Diplomado (CSV)</button>
-          <button class="btn secondary" id="rep-export-alumnos-btn">🧑‍🎓 Exportar por Alumnos (CSV)</button>
+          <button class="btn" id="rep-export-btn">📊 Descargar Reporte (Excel)</button>
         </div>
       </div>
 
