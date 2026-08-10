@@ -9,11 +9,15 @@ export function calcularEnTiempoReal() {
   const valDescuento = monto * (descPct / 100);
   const montoConDescuento = monto - valDescuento;
   const valCuota = montoConDescuento / cuotas;
-  const valComision = montoConDescuento * (pct / 100);
+  const valComisionPorCuota = valCuota * (pct / 100);
+  const valComision = valComisionPorCuota * cuotas;
 
   document.getElementById('calc-val-cuota').textContent = fmt(valCuota);
+  document.getElementById('calc-val-comision-cuota').textContent = fmt(valComisionPorCuota);
   document.getElementById('calc-val-comision').textContent = fmt(valComision);
   document.getElementById('calc-val-descuento').textContent = fmt(valDescuento);
+  document.getElementById('calc-comision-desglose').textContent =
+    cuotas > 1 ? `${fmt(valComisionPorCuota)} × ${cuotas} cuota(s) acumuladas` : 'Tu ganancia sobre esta venta';
 
   const vMonto = moneyVal('v-monto');
   const vPct = parseFloat(document.getElementById('v-porcentaje').value) || 0;
