@@ -1,5 +1,7 @@
 const { makeCrudController } = require('./crud.factory');
 
+const ESTADOS = ['activo', 'concluido'];
+
 function buildProducto(body) {
   const nombre = (body.nombre || '').trim();
   const precio = Number(body.precio) || 0;
@@ -10,6 +12,7 @@ function buildProducto(body) {
     precio,
     meta: parseInt(body.meta, 10) || 0,
     valor: parseFloat(body.valor) || 8.5,
+    estado: ESTADOS.includes(body.estado) ? body.estado : 'activo',
   };
 }
 

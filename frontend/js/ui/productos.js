@@ -67,6 +67,25 @@ window.editarDiplomado = async function editarDiplomado(id) {
   }
 };
 
+window.concluirDiplomado = async function concluirDiplomado(id) {
+  const p = state.productos.find((x) => x.id === id);
+  if (!p) return;
+  const nuevoEstado = p.estado === 'concluido' ? 'activo' : 'concluido';
+  const confirmMsg = nuevoEstado === 'concluido'
+    ? '¿Marcar este diplomado como concluido? No se borra ningún dato: los alumnos y ventas quedan intactos, solo deja de estar disponible para nuevas inscripciones.'
+    : '¿Reabrir este diplomado para nuevas inscripciones?';
+  if (!confirm(confirmMsg)) return;
+
+  try {
+    const actualizado = await api.productos.update(id, { estado: nuevoEstado });
+    Object.assign(p, actualizado);
+    await renderAll();
+    showToast(nuevoEstado === 'concluido' ? 'Diplomado marcado como concluido.' : 'Diplomado reabierto.');
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 window.borrarDiplomado = async function borrarDiplomado(id) {
   if (!confirm('¿Seguro que deseas eliminar este diplomado?')) return;
   try {
@@ -102,18 +121,20 @@ export function renderProductosCards(targetId) {
   el.innerHTML = state.productos.map((p) => {
     const vs = state.ventas.filter((v) => v.productoId === p.id);
     const totalComision = vs.reduce((s, v) => s + v.comision, 0);
+    const concluido = p.estado === 'concluido';
 
     return `
-      <div class="diploma-card">
-        <div class="diploma-title">${p.nombre}</div>
+      <div class="diploma-card" style="${concluido ? 'opacity:0.75;' : ''}">
+        <div class="diploma-title">${p.nombre} ${concluido ? '<span class="pill" style="color:var(--coral);">CONCLUIDO</span>' : ''}</div>
         <div class="diploma-price">${fmt(p.precio)} · ${p.valor}% com.</div>
         <div class="diploma-count mono">${vs.length}</div>
         <div class="diploma-count-label">Alumnos Inscritos (Meta: ${p.meta || 0})</div>
         <div class="diploma-earn">${fmt(totalComision)} comisiones</div>
 
         <div class="diploma-actions">
-          <button class="btn btn-sm" onclick="venderDiplomadoDirecto('${p.id}')">🛍️ Vender</button>
+          ${concluido ? '' : `<button class="btn btn-sm" onclick="venderDiplomadoDirecto('${p.id}')">🛍️ Vender</button>`}
           <button class="btn secondary btn-sm" onclick="editarDiplomado('${p.id}')">✏️ Editar</button>
+          <button class="btn secondary btn-sm" onclick="concluirDiplomado('${p.id}')">${concluido ? '↩️ Reabrir' : '✅ Concluir'}</button>
           <button class="btn danger btn-sm" onclick="borrarDiplomado('${p.id}')">🗑️ Borrar</button>
         </div>
       </div>

@@ -7,6 +7,7 @@ export const state = {
   recordatorios: [],
   plantillas: [],
   parametros: { metodosPago: [], cargos: [], moneda: '₲' },
+  archivos: [],
 };
 
 export function applyState(data) {
@@ -16,4 +17,5 @@ export function applyState(data) {
   state.recordatorios = data.recordatorios;
   state.plantillas = data.plantillas;
   state.parametros = data.parametros;
+  state.archivos = data.archivos || [];
 }

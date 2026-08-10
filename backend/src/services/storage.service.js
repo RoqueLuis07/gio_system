@@ -6,16 +6,16 @@ const TABLES = {
     columns: { id: 'id', nombre: 'nombre', pass: 'pass', rol: 'rol' },
   },
   productos: {
-    columns: { id: 'id', nombre: 'nombre', precio: 'precio', meta: 'meta', valor: 'valor' },
+    columns: { id: 'id', nombre: 'nombre', precio: 'precio', meta: 'meta', valor: 'valor', estado: 'estado' },
     numeric: ['precio', 'meta', 'valor'],
   },
   ventas: {
     columns: {
-      id: 'id', productoId: 'producto_id', cliente: 'cliente', telefono: 'telefono',
+      id: 'id', productoId: 'producto_id', cliente: 'cliente', telefono: 'telefono', ci: 'ci',
       empresa: 'empresa', cargo: 'cargo', metodoPago: 'metodo_pago', fecha: 'fecha',
-      monto: 'monto', porcentaje: 'porcentaje', comision: 'comision',
+      monto: 'monto', porcentaje: 'porcentaje', comision: 'comision', descuento: 'descuento',
     },
-    numeric: ['monto', 'porcentaje', 'comision'],
+    numeric: ['monto', 'porcentaje', 'comision', 'descuento'],
   },
   prospectos: {
     columns: { id: 'id', nombre: 'nombre', productoId: 'producto_id', telefono: 'telefono', estado: 'estado', fecha: 'fecha' },
@@ -120,8 +120,61 @@ async function setCollection(name, items) {
   return items;
 }
 
+const ARCHIVOS_BUCKET = 'repositorio';
+
+async function listArchivos() {
+  const { data, error } = await getClient().from('archivos').select('*').order('created_at', { ascending: false });
+  if (error) throw new Error(`Error leyendo archivos: ${error.message}`);
+  return data.map((row) => ({
+    id: row.id,
+    nombre: row.nombre,
+    categoria: row.categoria,
+    tipo: row.tipo,
+    url: row.url,
+    tamano: Number(row.tamano) || 0,
+    fecha: row.created_at,
+  }));
+}
+
+async function insertArchivo({ id, nombre, categoria, tipo, buffer }) {
+  const supabase = getClient();
+  const ruta = `${id}-${nombre}`;
+
+  const { error: uploadError } = await supabase.storage.from(ARCHIVOS_BUCKET).upload(ruta, buffer, {
+    contentType: tipo || 'application/octet-stream',
+    upsert: false,
+  });
+  if (uploadError) throw new Error(`Error subiendo el archivo: ${uploadError.message}`);
+
+  const { data: urlData } = supabase.storage.from(ARCHIVOS_BUCKET).getPublicUrl(ruta);
+
+  const { data, error } = await supabase
+    .from('archivos')
+    .insert({ id, nombre, categoria, tipo, ruta, url: urlData.publicUrl, tamano: buffer.length })
+    .select()
+    .single();
+  if (error) throw new Error(`Error guardando el archivo: ${error.message}`);
+
+  return { id: data.id, nombre: data.nombre, categoria: data.categoria, tipo: data.tipo, url: data.url, tamano: Number(data.tamano) || 0, fecha: data.created_at };
+}
+
+async function removeArchivo(id) {
+  const supabase = getClient();
+  const { data: row, error: selectError } = await supabase.from('archivos').select('ruta').eq('id', id).single();
+  if (selectError) throw new Error(`Error leyendo el archivo: ${selectError.message}`);
+  if (!row) return false;
+
+  const { error: storageError } = await supabase.storage.from(ARCHIVOS_BUCKET).remove([row.ruta]);
+  if (storageError) throw new Error(`Error eliminando el archivo del storage: ${storageError.message}`);
+
+  const { error: deleteError } = await supabase.from('archivos').delete().eq('id', id);
+  if (deleteError) throw new Error(`Error eliminando el archivo: ${deleteError.message}`);
+
+  return true;
+}
+
 async function getState() {
-  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros] = await Promise.all([
+  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos] = await Promise.all([
     getCollection('usuarios'),
     getCollection('productos'),
     getCollection('ventas'),
@@ -129,8 +182,9 @@ async function getState() {
     getCollection('recordatorios'),
     getCollection('plantillas'),
     getCollection('parametros'),
+    listArchivos(),
   ]);
-  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros };
+  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos };
 }
 
-module.exports = { getState, getCollection, setCollection };
+module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, removeArchivo };

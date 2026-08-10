@@ -10,6 +10,8 @@ import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
 import { renderTicker } from './ui/ticker.js';
+import { renderRepositorio } from './ui/repositorio.js';
+import { renderReportesPreview } from './ui/reportes.js';
 
 function updateMetaGauge() {
   const circle = document.getElementById('meta-gauge-circle');
@@ -31,7 +33,10 @@ function updateMetaGauge() {
 }
 
 export async function renderAll() {
-  const pOptions = state.productos.map((p) => `<option value="${p.id}">${p.nombre}</option>`).join('');
+  // Diplomados activos primero; los concluidos siguen disponibles (para no romper
+  // ediciones de ventas ya cargadas en ellos) pero marcados y al final de la lista.
+  const productosOrdenados = [...state.productos].sort((a, b) => (a.estado === 'concluido' ? 1 : 0) - (b.estado === 'concluido' ? 1 : 0));
+  const pOptions = productosOrdenados.map((p) => `<option value="${p.id}">${p.nombre}${p.estado === 'concluido' ? ' (Concluido)' : ''}</option>`).join('');
 
   document.getElementById('v-producto').innerHTML = pOptions;
   document.getElementById('crm-producto').innerHTML = '<option value="">— Seleccionar Diplomado —</option>' + pOptions;
@@ -59,4 +64,6 @@ export async function renderAll() {
   calcularEnTiempoReal();
   renderWaModuloOptions();
   renderTicker();
+  renderRepositorio();
+  renderReportesPreview();
 }

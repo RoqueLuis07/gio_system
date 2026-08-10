@@ -17,11 +17,13 @@ export function calcularEnTiempoReal() {
 
   const vMonto = moneyVal('v-monto');
   const vPct = parseFloat(document.getElementById('v-porcentaje').value) || 0;
-  document.getElementById('v-comision-preview').textContent = fmt(vMonto * (vPct / 100));
+  const vDescPct = parseFloat(document.getElementById('v-descuento').value) || 0;
+  const vBase = vMonto - vMonto * (vDescPct / 100);
+  document.getElementById('v-comision-preview').textContent = fmt(vBase * (vPct / 100));
 }
 
 export function initCalculadora() {
-  ['c-porcentaje', 'c-cuotas', 'c-descuento', 'v-porcentaje'].forEach((id) => {
+  ['c-porcentaje', 'c-cuotas', 'c-descuento', 'v-porcentaje', 'v-descuento'].forEach((id) => {
     document.getElementById(id).addEventListener('input', calcularEnTiempoReal);
   });
 }

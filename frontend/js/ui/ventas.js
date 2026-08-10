@@ -14,6 +14,7 @@ export function initVentas() {
     const cliente = document.getElementById('v-cliente').value.trim();
     const monto = moneyVal('v-monto');
     const pct = parseFloat(document.getElementById('v-porcentaje').value) || 8.5;
+    const descuento = parseFloat(document.getElementById('v-descuento').value) || 0;
 
     if (!productoId || !cliente || !monto) return alert('Ingresa cliente y monto.');
 
@@ -21,12 +22,14 @@ export function initVentas() {
       productoId,
       cliente,
       telefono: document.getElementById('v-telefono').value,
+      ci: document.getElementById('v-ci').value,
       empresa: document.getElementById('v-empresa').value,
       cargo: document.getElementById('v-cargo').value,
       metodoPago: document.getElementById('v-metodo-pago').value,
       fecha: document.getElementById('v-fecha').value || new Date().toISOString().slice(0, 10),
       monto,
       porcentaje: pct,
+      descuento,
     };
 
     try {
@@ -44,6 +47,8 @@ export function initVentas() {
       }
 
       document.getElementById('v-cliente').value = '';
+      document.getElementById('v-ci').value = '';
+      document.getElementById('v-descuento').value = '0';
       await renderAll();
     } catch (err) {
       alert(err.message);
@@ -59,12 +64,14 @@ window.editarVenta = function editarVenta(id) {
   document.getElementById('v-producto').value = v.productoId;
   document.getElementById('v-cliente').value = v.cliente;
   document.getElementById('v-telefono').value = v.telefono || '';
+  document.getElementById('v-ci').value = v.ci || '';
   document.getElementById('v-empresa').value = v.empresa || '';
   document.getElementById('v-cargo').value = v.cargo || '';
   document.getElementById('v-metodo-pago').value = v.metodoPago || '';
   document.getElementById('v-fecha').value = v.fecha;
   document.getElementById('v-monto').value = Math.round(v.monto).toLocaleString('es-PY');
   document.getElementById('v-porcentaje').value = v.porcentaje;
+  document.getElementById('v-descuento').value = v.descuento || 0;
   document.getElementById('v-submit').textContent = '💾 Actualizar Venta';
 
   switchView('ventas');
@@ -110,6 +117,7 @@ export function renderVentasTable() {
     return `
       <tr>
         <td><b>${v.cliente}</b></td>
+        <td class="mono">${v.ci || '—'}</td>
         <td><span class="pill">${p ? p.nombre : 'Eliminado'}</span></td>
         <td>${v.empresa || 'Particular'}</td>
         <td class="mono">${v.fecha}</td>
@@ -124,5 +132,5 @@ export function renderVentasTable() {
   }).join('');
 
   if (dashEl) dashEl.innerHTML = `<table><thead><tr><th>Alumno</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>${rowsDash.slice(0, 5).join('')}</tbody></table>`;
-  if (el) el.innerHTML = `<table><thead><tr><th>Alumno</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
+  if (el) el.innerHTML = `<table><thead><tr><th>Alumno</th><th>CI</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
 }

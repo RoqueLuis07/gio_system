@@ -13,6 +13,8 @@ import { initRecordatorios } from './ui/recordatorios.js';
 import { initCalculadora, calcularEnTiempoReal } from './ui/calculadora.js';
 import { initParametros } from './ui/parametros.js';
 import { initWaModulo } from './ui/wa-modulo.js';
+import { initRepositorio } from './ui/repositorio.js';
+import { initReportes } from './ui/reportes.js';
 
 async function init() {
   document.getElementById('v-fecha').value = new Date().toISOString().slice(0, 10);
@@ -31,6 +33,8 @@ async function init() {
   initCalculadora();
   initParametros();
   initWaModulo();
+  initRepositorio();
+  initReportes();
 
   try {
     const data = await api.getState();
