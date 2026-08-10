@@ -10,7 +10,7 @@ import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
 import { renderTicker } from './ui/ticker.js';
-import { renderRepositorio, renderRepositorioConcluidos } from './ui/repositorio.js';
+import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
 
 function updateMetaGauge() {
@@ -55,8 +55,9 @@ export async function renderAll() {
   document.getElementById('stat-diplomados').textContent = state.productos.filter((p) => p.estado !== 'concluido').length;
   updateMetaGauge();
 
-  renderProductosCards('dash-cards', { hideConcluidos: true });
-  renderProductosCards('productos-cards');
+  renderProductosCards('dash-cards', { filter: 'activos' });
+  renderProductosCards('productos-cards', { filter: 'activos' });
+  renderProductosCards('productos-cards-concluidos', { filter: 'concluidos' });
   renderVentasTable();
   renderRecordatorios();
   renderCRM();
@@ -65,6 +66,5 @@ export async function renderAll() {
   renderWaModuloOptions();
   renderTicker();
   renderRepositorio();
-  renderRepositorioConcluidos();
   renderReportesPreview();
 }

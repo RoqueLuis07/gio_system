@@ -110,14 +110,17 @@ window.venderDiplomadoDirecto = function venderDiplomadoDirecto(id) {
   showToast('Diplomado seleccionado para la venta.');
 };
 
-export function renderProductosCards(targetId, { hideConcluidos = false } = {}) {
+export function renderProductosCards(targetId, { filter } = {}) {
   const el = document.getElementById(targetId);
   if (!el) return;
 
-  const productos = hideConcluidos ? state.productos.filter((p) => p.estado !== 'concluido') : state.productos;
+  let productos = state.productos;
+  if (filter === 'activos') productos = productos.filter((p) => p.estado !== 'concluido');
+  if (filter === 'concluidos') productos = productos.filter((p) => p.estado === 'concluido');
 
   if (productos.length === 0) {
-    el.innerHTML = `<div class="empty-state">${hideConcluidos ? 'Sin diplomados activos.' : 'Sin diplomados registrados.'}</div>`;
+    const msg = filter === 'concluidos' ? 'No hay diplomados concluidos.' : filter === 'activos' ? 'Sin diplomados activos.' : 'Sin diplomados registrados.';
+    el.innerHTML = `<div class="empty-state">${msg}</div>`;
     return;
   }
 
