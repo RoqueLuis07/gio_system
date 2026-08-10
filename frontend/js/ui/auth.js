@@ -1,5 +1,5 @@
 import { api } from '../api.js';
-import { state } from '../state.js';
+import { state, loadState } from '../state.js';
 import { showToast } from '../toast.js';
 import { updateClockAndGreeting } from './clock.js';
 import { renderAll } from '../render.js';
@@ -34,6 +34,12 @@ export function initAuth() {
       saveSession(state.usuario);
       document.getElementById('login-overlay').style.display = 'none';
       updateClockAndGreeting();
+
+      const estadoResult = await loadState();
+      if (!estadoResult.ok) {
+        alert(`Sesión iniciada, pero no se pudieron cargar los datos del servidor.\n\nDetalle: ${estadoResult.error.message}`);
+      }
+
       await renderAll();
       showToast(`¡Bienvenido/a, ${state.usuario.nombre}!`);
     } catch (err) {
