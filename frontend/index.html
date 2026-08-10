@@ -5,14 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>CRM &amp; Suite de Ventas Pro — GM Ventas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
+<div class="grid-bg"></div>
+
 <!-- PANTALLA DE LOGIN -->
 <div id="login-overlay">
-  <div class="login-card">
+  <div class="login-card card-glow">
     <div class="brand" style="justify-content:center; margin-bottom:10px;"><span class="seal"></span> GM Ventas Pro</div>
     <h2>Acceso al Sistema</h2>
     <div style="text-align:left; margin-bottom:12px;">
@@ -28,6 +30,8 @@
 </div>
 
 <div id="toast-container"></div>
+
+<div id="ticker" class="ticker"><div class="ticker-track" id="ticker-track"></div></div>
 
 <div class="app">
   <aside class="sidebar">
@@ -64,6 +68,14 @@
     <button class="navbtn" data-view="productos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
       Diplomados &amp; Carga Masiva
+    </button>
+    <button class="navbtn" data-view="reportes">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
+      Reportes
+    </button>
+    <button class="navbtn" data-view="repositorio">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+      Repositorio
     </button>
     <button class="navbtn" data-view="parametros">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -116,10 +128,34 @@
           <div class="stat-value teal mono" id="stat-ventas">0</div>
           <div class="stat-sub">Inscripciones cerradas</div>
         </div>
+        <div class="stat-card">
+          <div class="stat-label">Diplomados Activos</div>
+          <div class="stat-value mono" id="stat-diplomados">0</div>
+          <div class="stat-sub">Programas en oferta</div>
+        </div>
       </div>
 
-      <div class="section-label">Metas de Diplomados <span class="hint">Progreso global de inscripciones</span></div>
-      <div class="cards-grid" id="dash-cards"></div>
+      <div class="gauge-row">
+        <div class="stat-card gauge-card">
+          <div class="section-label" style="margin-top:0;">Meta Global</div>
+          <div class="gauge-wrap">
+            <svg viewBox="0 0 148 148" width="148" height="148" class="gauge-svg">
+              <circle cx="74" cy="74" r="64" class="gauge-track" />
+              <circle cx="74" cy="74" r="64" class="gauge-fill" id="meta-gauge-circle" />
+            </svg>
+            <div class="gauge-center">
+              <span class="gauge-pct" id="meta-gauge-pct">0%</span>
+              <span class="gauge-label" id="meta-gauge-label">0 / 0 alumnos</span>
+            </div>
+          </div>
+          <p class="gauge-desc">Progreso combinado de inscripciones sobre la meta de todos los diplomados.</p>
+        </div>
+
+        <div class="stat-card" style="flex:1;">
+          <div class="section-label" style="margin-top:0;">Metas de Diplomados <span class="hint">Progreso global de inscripciones</span></div>
+          <div class="cards-grid" id="dash-cards"></div>
+        </div>
+      </div>
 
       <div class="section-label">Últimas Inscripciones Registradas</div>
       <div class="table-wrap" id="dash-recent"></div>
@@ -160,7 +196,7 @@
 
       <div class="form-card" style="border-color:var(--teal);">
         <h3 style="color:var(--teal); margin-top:0;">📥 Carga Masiva de Alumnos (CSV / Texto)</h3>
-        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:14px;">Pega una lista de alumnos separados por comas. Formato por línea: <br><code>Nombre, Teléfono, Empresa, Monto</code></p>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:14px;">Pega una lista de alumnos separados por comas. Formato por línea: <br><code>Nombre, Teléfono, Empresa, Monto, CI, Descuento(%)</code> — CI y Descuento son opcionales.</p>
 
         <div class="form-row cols2">
           <div>
@@ -174,7 +210,7 @@
         </div>
 
         <label>Lista de Alumnos (Pega aquí tus datos)</label>
-        <textarea id="csv-text-input" placeholder="Juan Pérez, 0981123456, Banco Itaú, 1200000&#10;María González, 0982555666, Particular, 1200000"></textarea>
+        <textarea id="csv-text-input" placeholder="Juan Pérez, 0981123456, Banco Itaú, 1200000, 4512389, 10&#10;María González, 0982555666, Particular, 1200000"></textarea>
 
         <button class="btn wa wide" id="csv-process-btn" style="margin-top:12px;">🚀 Cargar Todos los Alumnos en Masa</button>
       </div>
@@ -312,6 +348,17 @@
           </div>
         </div>
 
+        <div class="form-row cols2">
+          <div>
+            <label>Cédula (CI)</label>
+            <input id="v-ci" class="mono-input" placeholder="Ej. 4.512.389" />
+          </div>
+          <div>
+            <label>Descuento Cliente (%)</label>
+            <input id="v-descuento" class="mono-input" type="number" step="0.1" value="0" />
+          </div>
+        </div>
+
         <div class="form-row cols3">
           <div>
             <label>Empresa</label>
@@ -354,24 +401,15 @@
       <p class="subtitle">Gestiona potenciales alumnos.</p>
 
       <div class="form-card">
-        <div class="form-row">
+        <div class="form-row cols3">
           <div><label>Nombre Prospecto *</label><input id="crm-nombre" placeholder="Ej. Ana Martínez" /></div>
           <div><label>Teléfono</label><input id="crm-telefono" placeholder="Ej. 0981 555 666" /></div>
           <div><label>Diplomado Interés *</label><select id="crm-producto"></select></div>
-          <div>
-            <label>Estado</label>
-            <select id="crm-estado">
-              <option value="nuevo">Nuevo</option>
-              <option value="negociacion">En Negociación</option>
-              <option value="ganado">Ganado</option>
-              <option value="perdido">Perdido</option>
-            </select>
-          </div>
         </div>
         <button class="btn wide" id="crm-submit">➕ Agregar Prospecto</button>
       </div>
-      <div class="section-label">Lista de Prospectos</div>
-      <div class="table-wrap" id="crm-table"></div>
+      <div class="section-label">Pipeline <span class="hint">Arrastrá las tarjetas entre columnas o usá las flechas</span></div>
+      <div class="kanban-board" id="crm-kanban"></div>
     </section>
 
     <!-- EXPORTAR -->
@@ -467,6 +505,62 @@
           <div class="stat-sub">Monto descontado al cliente</div>
         </div>
       </div>
+    </section>
+
+    <!-- REPORTES -->
+    <section class="view" id="view-reportes">
+      <h1 class="pagetitle">Reportes</h1>
+      <p class="subtitle">Exportá las ventas de un período específico, agrupadas por diplomado o detalladas por alumno.</p>
+
+      <div class="form-card">
+        <div class="form-row cols3">
+          <div>
+            <label>Fecha Inicio</label>
+            <input id="rep-fecha-inicio" type="date" />
+          </div>
+          <div>
+            <label>Fecha Fin</label>
+            <input id="rep-fecha-fin" type="date" />
+          </div>
+          <div style="display:flex; align-items:flex-end;">
+            <span class="pill" id="rep-resumen">Seleccioná un rango de fechas</span>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:10px;">
+          <button class="btn secondary" id="rep-export-diplomado-btn">📊 Exportar por Diplomado (CSV)</button>
+          <button class="btn secondary" id="rep-export-alumnos-btn">🧑‍🎓 Exportar por Alumnos (CSV)</button>
+        </div>
+      </div>
+
+      <div class="section-label">Vista Previa <span class="hint">Ventas del período seleccionado</span></div>
+      <div class="table-wrap" id="rep-preview-table"></div>
+    </section>
+
+    <!-- REPOSITORIO -->
+    <section class="view" id="view-repositorio">
+      <h1 class="pagetitle">Repositorio de Archivos</h1>
+      <p class="subtitle">Flyers, documentos y fotos del equipo, con vista previa.</p>
+
+      <div class="form-card">
+        <div class="form-row cols3">
+          <div>
+            <label>Categoría</label>
+            <select id="rep-archivo-categoria">
+              <option value="flyer">Flyer</option>
+              <option value="documento">Documento</option>
+              <option value="foto">Foto</option>
+            </select>
+          </div>
+          <div style="grid-column: span 2;">
+            <label>Archivo (máx. 10MB)</label>
+            <input id="rep-archivo-input" type="file" />
+          </div>
+        </div>
+        <button class="btn wide" id="rep-archivo-submit">⬆️ Subir Archivo</button>
+      </div>
+
+      <div class="section-label">Archivos Guardados</div>
+      <div class="cards-grid" id="repositorio-grid"></div>
     </section>
 
     <!-- CONFIGURACIÓN -->

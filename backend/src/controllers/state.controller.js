@@ -11,6 +11,7 @@ module.exports = {
         recordatorios: db.recordatorios,
         plantillas: db.plantillas,
         parametros: db.parametros,
+        archivos: db.archivos,
       });
     } catch (err) {
       res.status(500).json({ error: err.message });

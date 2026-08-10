@@ -16,6 +16,18 @@ async function request(method, path, body) {
   return data;
 }
 
+async function requestForm(method, path, formData) {
+  const res = await fetch(API_BASE + path, { method, body: formData });
+
+  if (res.status === 204) return null;
+
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    throw new Error((data && data.error) || 'Ocurrió un error al comunicarse con el servidor.');
+  }
+  return data;
+}
+
 export const api = {
   getState: () => request('GET', '/state'),
 
@@ -44,6 +56,7 @@ export const api = {
 
   prospectos: {
     create: (data) => request('POST', '/prospectos', data),
+    update: (id, data) => request('PUT', `/prospectos/${id}`, data),
     remove: (id) => request('DELETE', `/prospectos/${id}`),
   },
 
@@ -61,5 +74,11 @@ export const api = {
 
   parametros: {
     update: (data) => request('PUT', '/parametros', data),
+  },
+
+  archivos: {
+    list: () => request('GET', '/archivos'),
+    upload: (formData) => requestForm('POST', '/archivos', formData),
+    remove: (id) => request('DELETE', `/archivos/${id}`),
   },
 };

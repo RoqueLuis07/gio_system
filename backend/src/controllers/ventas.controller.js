@@ -1,11 +1,17 @@
 const storage = require('../services/storage.service');
 const { uid } = require('../utils/id');
 
+function calcularComision(monto, porcentaje, descuento) {
+  const base = monto - monto * (descuento / 100);
+  return base * (porcentaje / 100);
+}
+
 function buildVenta(body) {
   const productoId = body.productoId || '';
   const cliente = (body.cliente || '').trim();
   const monto = Number(body.monto) || 0;
   const porcentaje = parseFloat(body.porcentaje) || 8.5;
+  const descuento = parseFloat(body.descuento) || 0;
 
   if (!productoId || !cliente || !monto) {
     throw new Error('Ingresa diplomado, cliente y monto.');
@@ -15,35 +21,41 @@ function buildVenta(body) {
     productoId,
     cliente,
     telefono: body.telefono || '',
+    ci: (body.ci || '').trim(),
     empresa: body.empresa || '',
     cargo: body.cargo || '',
     metodoPago: body.metodoPago || '',
     fecha: body.fecha || new Date().toISOString().slice(0, 10),
     monto,
     porcentaje,
-    comision: monto * (porcentaje / 100),
+    descuento,
+    comision: calcularComision(monto, porcentaje, descuento),
   };
 }
 
-// Parses lines like "Nombre, Telefono, Empresa, Monto" into venta entries.
+// Parses lines like "Nombre, Telefono, Empresa, Monto, CI, Descuento" into venta entries.
 function parseCsvLine(line, productoId, defaultMonto) {
   const cols = line.split(',').map((s) => s.trim());
-  const [nombre, telefono, empresa, montoRaw] = cols;
+  const [nombre, telefono, empresa, montoRaw, ci, descuentoRaw] = cols;
   if (!nombre) return null;
 
   const monto = Number(String(montoRaw || '').replace(/\D/g, '')) || defaultMonto || 0;
+  const porcentaje = 8.5;
+  const descuento = parseFloat(descuentoRaw) || 0;
 
   return {
     productoId,
     cliente: nombre,
     telefono: telefono || '',
+    ci: (ci || '').trim(),
     empresa: empresa || 'Particular',
     cargo: '',
     metodoPago: '',
     fecha: new Date().toISOString().slice(0, 10),
     monto,
-    porcentaje: 8.5,
-    comision: monto * 0.085,
+    porcentaje,
+    descuento,
+    comision: calcularComision(monto, porcentaje, descuento),
   };
 }
 

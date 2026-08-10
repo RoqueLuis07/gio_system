@@ -12,10 +12,10 @@ export function initExportar() {
 
     if (list.length === 0) return alert('No hay alumnos para exportar.');
 
-    let csv = 'Alumno,Telefono,Diplomado,Empresa,Cargo,Fecha,Monto,Comision\n';
+    let csv = 'Alumno,CI,Telefono,Diplomado,Empresa,Cargo,Fecha,Monto,Descuento(%),Comision\n';
     list.forEach((v) => {
       const prod = state.productos.find((x) => x.id === v.productoId);
-      csv += `"${v.cliente}","${v.telefono || ''}","${prod ? prod.nombre : ''}","${v.empresa || ''}","${v.cargo || ''}","${v.fecha}",${v.monto},${v.comision}\n`;
+      csv += `"${v.cliente}","${v.ci || ''}","${v.telefono || ''}","${prod ? prod.nombre : ''}","${v.empresa || ''}","${v.cargo || ''}","${v.fecha}",${v.monto},${v.descuento || 0},${v.comision}\n`;
     });
 
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -54,12 +54,13 @@ export function renderExportView() {
       <thead>
         <tr>
           <th>Alumno</th>
+          <th>CI</th>
           <th>Teléfono</th>
           <th>Diplomado</th>
           <th>Empresa</th>
-          <th>Cargo</th>
           <th>Fecha</th>
           <th>Monto</th>
+          <th>Descuento</th>
         </tr>
       </thead>
       <tbody>
@@ -68,12 +69,13 @@ export function renderExportView() {
           return `
             <tr>
               <td><b>${v.cliente}</b></td>
+              <td class="mono">${v.ci || '—'}</td>
               <td>${v.telefono || '—'}</td>
               <td><span class="pill">${prod ? prod.nombre : 'Desconocido'}</span></td>
               <td>${v.empresa || 'Particular'}</td>
-              <td>${v.cargo || '—'}</td>
               <td class="mono">${v.fecha}</td>
               <td class="amt-teal">${fmt(v.monto)}</td>
+              <td class="mono">${v.descuento || 0}%</td>
             </tr>
           `;
         }).join('')}
