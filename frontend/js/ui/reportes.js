@@ -13,12 +13,37 @@ function ventasEnRango() {
   });
 }
 
-function descargarCSV(nombre, headers, filas) {
-  const esc = (v) => `"${String(v ?? '').replace(/"/g, '""')}"`;
-  let csv = headers.map(esc).join(',') + '\n';
-  filas.forEach((fila) => { csv += fila.map(esc).join(',') + '\n'; });
+function rangoParaNombre() {
+  const desde = document.getElementById('rep-fecha-inicio').value || 'inicio';
+  const hasta = document.getElementById('rep-fecha-fin').value || 'hoy';
+  return `${desde}_a_${hasta}`;
+}
 
-  const blob = new Blob(['﻿' + csv], { type: 'text/csv;charset=utf-8;' });
+function xmlEscape(v) {
+  return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+function celda(valor) {
+  if (typeof valor === 'number') {
+    return `<Cell><Data ss:Type="Number">${valor}</Data></Cell>`;
+  }
+  return `<Cell><Data ss:Type="String">${xmlEscape(valor)}</Data></Cell>`;
+}
+
+function hojaXml(nombreHoja, headers, filas) {
+  const filaHeaders = `<Row>${headers.map((h) => celda(h)).join('')}</Row>`;
+  const filasDatos = filas.map((fila) => `<Row>${fila.map((c) => celda(c)).join('')}</Row>`).join('');
+  return `<Worksheet ss:Name="${xmlEscape(nombreHoja)}"><Table>${filaHeaders}${filasDatos}</Table></Worksheet>`;
+}
+
+function descargarExcel(nombre, hojas) {
+  const xml = `<?xml version="1.0"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+${hojas.map((h) => hojaXml(h.nombre, h.headers, h.filas)).join('\n')}
+</Workbook>`;
+
+  const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -32,7 +57,7 @@ export function initReportes() {
     document.getElementById(id).addEventListener('change', renderReportesPreview);
   });
 
-  document.getElementById('rep-export-diplomado-btn').addEventListener('click', () => {
+  document.getElementById('rep-export-btn').addEventListener('click', () => {
     const ventas = ventasEnRango();
     if (ventas.length === 0) return alert('No hay ventas en el período seleccionado.');
 
@@ -45,38 +70,19 @@ export function initReportes() {
       porDiplomado[nombre].monto += v.monto;
       porDiplomado[nombre].comision += v.comision;
     });
+    const filasDiplomado = Object.entries(porDiplomado).map(([nombre, r]) => [nombre, r.alumnos, r.monto, r.comision]);
 
-    const filas = Object.entries(porDiplomado).map(([nombre, r]) => [nombre, r.alumnos, r.monto, r.comision]);
-    descargarCSV(
-      `Reporte_Por_Diplomado_${rangoParaNombre()}.csv`,
-      ['Diplomado', 'Cantidad de Alumnos', 'Monto Total', 'Comision Total'],
-      filas
-    );
-    showToast('Reporte por diplomado descargado.');
-  });
-
-  document.getElementById('rep-export-alumnos-btn').addEventListener('click', () => {
-    const ventas = ventasEnRango();
-    if (ventas.length === 0) return alert('No hay ventas en el período seleccionado.');
-
-    const filas = ventas.map((v) => {
+    const filasAlumnos = ventas.map((v) => {
       const prod = state.productos.find((p) => p.id === v.productoId);
       return [v.cliente, v.ci || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.fecha, v.monto, v.descuento || 0, v.comision];
     });
 
-    descargarCSV(
-      `Reporte_Por_Alumnos_${rangoParaNombre()}.csv`,
-      ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
-      filas
-    );
-    showToast('Reporte por alumnos descargado.');
+    descargarExcel(`Reporte_Ventas_${rangoParaNombre()}.xls`, [
+      { nombre: 'Por Diplomado', headers: ['Diplomado', 'Cantidad de Alumnos', 'Monto Total', 'Comision Total'], filas: filasDiplomado },
+      { nombre: 'Por Alumnos', headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'], filas: filasAlumnos },
+    ]);
+    showToast('Reporte descargado (hojas: Por Diplomado y Por Alumnos).');
   });
-}
-
-function rangoParaNombre() {
-  const desde = document.getElementById('rep-fecha-inicio').value || 'inicio';
-  const hasta = document.getElementById('rep-fecha-fin').value || 'hoy';
-  return `${desde}_a_${hasta}`;
 }
 
 export function renderReportesPreview() {
