@@ -75,27 +75,3 @@ export function renderRepositorio() {
     </div>
   `).join('');
 }
-
-export function renderRepositorioConcluidos() {
-  const el = document.getElementById('repositorio-diplomados-concluidos');
-  if (!el) return;
-
-  const concluidos = state.productos.filter((p) => p.estado === 'concluido');
-  if (concluidos.length === 0) {
-    el.innerHTML = `<div class="empty-state">No hay diplomados concluidos.</div>`;
-    return;
-  }
-
-  el.innerHTML = concluidos.map((p) => {
-    const vs = state.ventas.filter((v) => v.productoId === p.id);
-    return `
-      <div class="diploma-card" style="opacity:0.85;">
-        <div class="diploma-title">${p.nombre} <span class="pill" style="color:var(--coral);">CONCLUIDO</span></div>
-        <div class="diploma-price">${vs.length} alumno(s) registrado(s)</div>
-        <div class="diploma-actions">
-          <button class="btn secondary btn-sm" onclick="concluirDiplomado('${p.id}')">↩️ Reestablecer</button>
-        </div>
-      </div>
-    `;
-  }).join('');
-}
