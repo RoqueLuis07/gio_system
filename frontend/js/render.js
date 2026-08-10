@@ -23,7 +23,7 @@ function updateMetaGauge() {
   const totalAlumnos = state.ventas.length;
   const pct = Math.max(0, Math.min(100, (totalAlumnos / totalMeta) * 100));
 
-  const r = 40;
+  const r = 54;
   const c = 2 * Math.PI * r;
   circle.style.strokeDasharray = `${c}`;
   circle.style.strokeDashoffset = `${c - (pct / 100) * c}`;
