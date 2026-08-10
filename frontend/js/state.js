@@ -1,3 +1,5 @@
+import { api } from './api.js';
+
 export const state = {
   usuario: null,
   usuarios: [],
@@ -18,4 +20,21 @@ export function applyState(data) {
   state.plantillas = data.plantillas;
   state.parametros = data.parametros;
   state.archivos = data.archivos || [];
+}
+
+// Reintenta la carga del estado ante fallas transitorias (ej. errores intermitentes
+// de conexión con Supabase) para no dejar la app con datos vacíos por una falla puntual.
+export async function loadState(retries = 3, delayMs = 1200) {
+  let lastError = null;
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const data = await api.getState();
+      applyState(data);
+      return { ok: true };
+    } catch (err) {
+      lastError = err;
+      if (attempt < retries) await new Promise((resolve) => setTimeout(resolve, delayMs));
+    }
+  }
+  return { ok: false, error: lastError };
 }

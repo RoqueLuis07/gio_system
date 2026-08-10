@@ -1,5 +1,4 @@
-import { api } from './api.js';
-import { applyState } from './state.js';
+import { loadState } from './state.js';
 import { attachMoneyInput } from './format.js';
 import { initNav } from './nav.js';
 import { renderAll } from './render.js';
@@ -36,11 +35,9 @@ async function init() {
   initRepositorio();
   initReportes();
 
-  try {
-    const data = await api.getState();
-    applyState(data);
-  } catch (err) {
-    alert(`No se pudo cargar el estado inicial desde el servidor.\n\nDetalle: ${err.message}`);
+  const result = await loadState();
+  if (!result.ok) {
+    alert(`No se pudo cargar el estado inicial desde el servidor.\n\nDetalle: ${result.error.message}`);
   }
 
   restoreSession();
