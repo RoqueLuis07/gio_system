@@ -10,7 +10,7 @@ import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
 import { renderTicker } from './ui/ticker.js';
-import { renderRepositorio } from './ui/repositorio.js';
+import { renderRepositorio, renderRepositorioConcluidos } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
 
 function updateMetaGauge() {
@@ -23,7 +23,7 @@ function updateMetaGauge() {
   const totalAlumnos = state.ventas.length;
   const pct = Math.max(0, Math.min(100, (totalAlumnos / totalMeta) * 100));
 
-  const r = 64;
+  const r = 40;
   const c = 2 * Math.PI * r;
   circle.style.strokeDasharray = `${c}`;
   circle.style.strokeDashoffset = `${c - (pct / 100) * c}`;
@@ -52,10 +52,10 @@ export async function renderAll() {
   document.getElementById('stat-ganancia').textContent = fmt(state.ventas.reduce((s, v) => s + v.comision, 0));
   document.getElementById('stat-monto-total').textContent = fmt(state.ventas.reduce((s, v) => s + v.monto, 0));
   document.getElementById('stat-ventas').textContent = state.ventas.length;
-  document.getElementById('stat-diplomados').textContent = state.productos.length;
+  document.getElementById('stat-diplomados').textContent = state.productos.filter((p) => p.estado !== 'concluido').length;
   updateMetaGauge();
 
-  renderProductosCards('dash-cards');
+  renderProductosCards('dash-cards', { hideConcluidos: true });
   renderProductosCards('productos-cards');
   renderVentasTable();
   renderRecordatorios();
@@ -65,5 +65,6 @@ export async function renderAll() {
   renderWaModuloOptions();
   renderTicker();
   renderRepositorio();
+  renderRepositorioConcluidos();
   renderReportesPreview();
 }

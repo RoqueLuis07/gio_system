@@ -110,15 +110,18 @@ window.venderDiplomadoDirecto = function venderDiplomadoDirecto(id) {
   showToast('Diplomado seleccionado para la venta.');
 };
 
-export function renderProductosCards(targetId) {
+export function renderProductosCards(targetId, { hideConcluidos = false } = {}) {
   const el = document.getElementById(targetId);
   if (!el) return;
-  if (state.productos.length === 0) {
-    el.innerHTML = `<div class="empty-state">Sin diplomados registrados.</div>`;
+
+  const productos = hideConcluidos ? state.productos.filter((p) => p.estado !== 'concluido') : state.productos;
+
+  if (productos.length === 0) {
+    el.innerHTML = `<div class="empty-state">${hideConcluidos ? 'Sin diplomados activos.' : 'Sin diplomados registrados.'}</div>`;
     return;
   }
 
-  el.innerHTML = state.productos.map((p) => {
+  el.innerHTML = productos.map((p) => {
     const vs = state.ventas.filter((v) => v.productoId === p.id);
     const totalComision = vs.reduce((s, v) => s + v.comision, 0);
     const concluido = p.estado === 'concluido';
