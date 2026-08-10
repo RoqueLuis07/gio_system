@@ -2,7 +2,7 @@ import { loadState } from './state.js';
 import { attachMoneyInput } from './format.js';
 import { initNav } from './nav.js';
 import { renderAll } from './render.js';
-import { initAuth, restoreSession } from './ui/auth.js';
+import { initAuth } from './ui/auth.js';
 import { initClock } from './ui/clock.js';
 import { initProductos } from './ui/productos.js';
 import { initVentas } from './ui/ventas.js';
@@ -40,7 +40,6 @@ async function init() {
     alert(`No se pudo cargar el estado inicial desde el servidor.\n\nDetalle: ${result.error.message}`);
   }
 
-  restoreSession();
   await renderAll();
 }
 

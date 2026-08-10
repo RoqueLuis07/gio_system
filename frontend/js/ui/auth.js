@@ -4,25 +4,6 @@ import { showToast } from '../toast.js';
 import { updateClockAndGreeting } from './clock.js';
 import { renderAll } from '../render.js';
 
-const SESSION_KEY = 'gmVentasProSession';
-
-function saveSession(usuario) {
-  localStorage.setItem(SESSION_KEY, JSON.stringify(usuario));
-}
-
-function loadSession() {
-  try {
-    const raw = localStorage.getItem(SESSION_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch (err) {
-    return null;
-  }
-}
-
-function clearSession() {
-  localStorage.removeItem(SESSION_KEY);
-}
-
 export function initAuth() {
   document.getElementById('login-btn').addEventListener('click', async () => {
     const u = document.getElementById('login-user-input').value.trim();
@@ -31,7 +12,6 @@ export function initAuth() {
     try {
       const result = await api.login(u, p);
       state.usuario = result.usuario;
-      saveSession(state.usuario);
       document.getElementById('login-overlay').style.display = 'none';
       updateClockAndGreeting();
 
@@ -49,7 +29,6 @@ export function initAuth() {
 
   document.getElementById('logout-btn').addEventListener('click', () => {
     state.usuario = null;
-    clearSession();
     document.getElementById('login-overlay').style.display = 'flex';
   });
 
@@ -62,25 +41,12 @@ export function initAuth() {
     try {
       const actualizado = await api.updateProfile(state.usuario.id, u, p);
       state.usuario = { ...state.usuario, ...actualizado };
-      saveSession(state.usuario);
       updateClockAndGreeting();
       showToast('Perfil y clave actualizados correctamente.');
     } catch (err) {
       alert(err.message);
     }
   });
-}
-
-// Restaura la sesión guardada en el navegador (si existe) para que un refresh
-// de la página no obligue a volver a iniciar sesión. Los datos de la app viven
-// siempre en el backend; esto solo evita repetir el login en cada recarga.
-export function restoreSession() {
-  const usuario = loadSession();
-  if (!usuario) return;
-
-  state.usuario = usuario;
-  document.getElementById('login-overlay').style.display = 'none';
-  updateClockAndGreeting();
 }
 
 export function renderPerfil() {

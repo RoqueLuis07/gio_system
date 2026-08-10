@@ -133,29 +133,23 @@
           <div class="stat-value mono" id="stat-diplomados">0</div>
           <div class="stat-sub">Programas en oferta</div>
         </div>
-      </div>
-
-      <div class="gauge-row">
-        <div class="stat-card gauge-card">
-          <div class="section-label" style="margin-top:0;">Meta Global</div>
-          <div class="gauge-wrap">
-            <svg viewBox="0 0 148 148" width="148" height="148" class="gauge-svg">
-              <circle cx="74" cy="74" r="64" class="gauge-track" />
-              <circle cx="74" cy="74" r="64" class="gauge-fill" id="meta-gauge-circle" />
+        <div class="stat-card gauge-card-compact">
+          <div class="stat-label">Meta Global</div>
+          <div class="gauge-wrap-sm">
+            <svg viewBox="0 0 96 96" width="96" height="96" class="gauge-svg gauge-svg-sm">
+              <circle cx="48" cy="48" r="40" class="gauge-track" />
+              <circle cx="48" cy="48" r="40" class="gauge-fill" id="meta-gauge-circle" />
             </svg>
-            <div class="gauge-center">
-              <span class="gauge-pct" id="meta-gauge-pct">0%</span>
-              <span class="gauge-label" id="meta-gauge-label">0 / 0 alumnos</span>
+            <div class="gauge-center gauge-center-sm">
+              <span class="gauge-pct gauge-pct-sm" id="meta-gauge-pct">0%</span>
             </div>
           </div>
-          <p class="gauge-desc">Progreso combinado de inscripciones sobre la meta de todos los diplomados.</p>
-        </div>
-
-        <div class="stat-card" style="flex:1;">
-          <div class="section-label" style="margin-top:0;">Metas de Diplomados <span class="hint">Progreso global de inscripciones</span></div>
-          <div class="cards-grid" id="dash-cards"></div>
+          <div class="stat-sub" id="meta-gauge-label">0 / 0 alumnos</div>
         </div>
       </div>
+
+      <div class="section-label">Metas de Diplomados <span class="hint">Progreso global de inscripciones</span></div>
+      <div class="cards-grid" id="dash-cards"></div>
 
       <div class="section-label">Últimas Inscripciones Registradas</div>
       <div class="table-wrap" id="dash-recent"></div>
@@ -560,6 +554,9 @@
 
       <div class="section-label">Archivos Guardados</div>
       <div class="cards-grid" id="repositorio-grid"></div>
+
+      <div class="section-label">Diplomados Concluidos <span class="hint">Archivo de diplomados cerrados, con sus alumnos y ventas intactos</span></div>
+      <div class="cards-grid" id="repositorio-diplomados-concluidos"></div>
     </section>
 
     <!-- CONFIGURACIÓN -->

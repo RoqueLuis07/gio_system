@@ -21,7 +21,7 @@ body{ background:radial-gradient(ellipse at top, var(--bg-2), var(--bg) 60%); co
   background-size: 42px 42px; mask-image: radial-gradient(ellipse at top, black, transparent 75%); -webkit-mask-image: radial-gradient(ellipse at top, black, transparent 75%); }
 
 /* TICKER */
-.ticker{ height:28px; background:rgba(13,19,38,0.85); border-bottom:1px solid var(--border); overflow:hidden; position:relative; z-index:20; }
+.ticker{ height:28px; background:rgba(13,19,38,0.85); border-bottom:1px solid var(--border); overflow:hidden; position:sticky; top:0; z-index:20; }
 .ticker-track{ display:flex; gap:44px; white-space:nowrap; animation:ticker-scroll 30s linear infinite; padding-left:24px; align-items:center; height:28px; }
 .ticker-item{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--text-dim); letter-spacing:.03em; display:inline-flex; align-items:center; gap:8px; }
 .ticker-item .dot{ width:6px; height:6px; border-radius:999px; background:var(--teal); box-shadow:0 0 6px var(--teal); flex-shrink:0; }
@@ -41,7 +41,7 @@ body{ background:radial-gradient(ellipse at top, var(--bg-2), var(--bg) 60%); co
 .login-card h2{ font-family:'Space Grotesk', sans-serif; color:var(--text); margin:10px 0 20px 0; font-size:22px; font-weight:600; }
 
 .app{ display:flex; min-height:calc(100vh - 28px); position:relative; z-index:1; }
-.sidebar{ width:260px; flex-shrink:0; background:rgba(18,26,46,0.55); backdrop-filter:blur(16px); border-right:1px solid var(--border); padding:24px 16px; display:flex; flex-direction:column; gap:6px; }
+.sidebar{ width:260px; flex-shrink:0; background:rgba(18,26,46,0.55); backdrop-filter:blur(16px); border-right:1px solid var(--border); padding:24px 16px; display:flex; flex-direction:column; gap:6px; position:sticky; top:28px; height:calc(100vh - 28px); overflow-y:auto; align-self:flex-start; }
 .brand{ font-family:'Space Grotesk', sans-serif; font-size:18px; font-weight:700; margin-bottom:20px; padding:0 8px; display:flex; align-items:center; gap:12px; }
 .brand{ background:linear-gradient(90deg, var(--violet), var(--teal)); -webkit-background-clip:text; background-clip:text; color:transparent; }
 .brand .seal{ width:28px; height:28px; border-radius:9px; flex-shrink:0;
@@ -83,17 +83,16 @@ h1.pagetitle{ font-family:'Space Grotesk', sans-serif; font-size:26px; font-weig
 .section-label{ font-family:'Space Grotesk', sans-serif; font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--teal); margin:28px 0 14px 0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; font-weight:600; }
 .section-label .hint{ font-family:'Inter'; font-size:12.5px; text-transform:none; letter-spacing:normal; font-weight:400; color:var(--text-faint); }
 
-/* GAUGE */
-.gauge-row{ display:flex; gap:16px; flex-wrap:wrap; align-items:stretch; }
-.gauge-card{ display:flex; flex-direction:column; align-items:center; text-align:center; min-width:220px; }
-.gauge-wrap{ position:relative; display:flex; align-items:center; justify-content:center; margin:8px 0; }
+/* GAUGE (tile compacto dentro del hero-grid, junto al resto de los indicadores) */
+.gauge-card-compact{ display:flex; flex-direction:column; align-items:center; text-align:center; }
+.gauge-wrap{ position:relative; display:flex; align-items:center; justify-content:center; margin:6px 0; }
 .gauge-svg{ transform:rotate(-90deg); }
 .gauge-track{ fill:none; stroke:rgba(255,255,255,0.07); stroke-width:10; }
 .gauge-fill{ fill:none; stroke:var(--teal); stroke-width:10; stroke-linecap:round; stroke-dasharray:402.1; stroke-dashoffset:402.1; filter:drop-shadow(0 0 6px var(--teal)); transition:stroke-dashoffset 1s ease; }
+.gauge-svg-sm .gauge-track, .gauge-svg-sm .gauge-fill{ stroke-width:8; }
 .gauge-center{ position:absolute; display:flex; flex-direction:column; align-items:center; }
 .gauge-pct{ font-family:'IBM Plex Mono', monospace; font-size:24px; font-weight:600; color:var(--text); }
-.gauge-label{ font-size:11px; color:var(--text-dim); margin-top:4px; text-align:center; max-width:110px; }
-.gauge-desc{ font-size:11.5px; color:var(--text-dim); margin-top:10px; max-width:220px; }
+.gauge-pct-sm{ font-size:18px; }
 
 .cards-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(250px,1fr)); gap:14px; }
 .diploma-card{ position:relative; background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:14px; padding:18px; overflow:hidden; display:flex; flex-direction:column; }
@@ -182,12 +181,11 @@ tr:hover td{ background:rgba(255,255,255,0.02); }
 
 @media (max-width:760px){
   .app{ flex-direction:column; }
-  .sidebar{ width:100%; padding:14px 16px; border-right:none; border-bottom:1px solid var(--border); }
+  .sidebar{ width:100%; padding:14px 16px; border-right:none; border-bottom:1px solid var(--border); position:static; height:auto; overflow-y:visible; }
   main{ padding:22px 16px; }
   .hero-grid, .form-row, .form-row.cols3, .form-row.cols2, .form-row.cols-wide4, .form-row.cols-wide3{ grid-template-columns:1fr; }
   .welcome-widget{ flex-direction:column; align-items:flex-start; }
   .weather-clock{ text-align:left; }
-  .gauge-row{ flex-direction:column; }
   .kanban-board{ grid-template-columns:1fr; }
 }
 
