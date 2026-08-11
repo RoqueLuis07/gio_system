@@ -13,7 +13,7 @@ const TABLES = {
     columns: {
       id: 'id', productoId: 'producto_id', cliente: 'cliente', telefono: 'telefono', ci: 'ci',
       empresa: 'empresa', cargo: 'cargo', metodoPago: 'metodo_pago', fecha: 'fecha',
-      monto: 'monto', porcentaje: 'porcentaje', comision: 'comision', descuento: 'descuento',
+      monto: 'monto', porcentaje: 'porcentaje', comision: 'comision', descuento: 'descuento', cobrado: 'cobrado',
     },
     numeric: ['monto', 'porcentaje', 'comision', 'descuento'],
   },

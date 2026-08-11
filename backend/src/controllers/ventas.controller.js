@@ -30,6 +30,7 @@ function buildVenta(body) {
     porcentaje,
     descuento,
     comision: calcularComision(monto, porcentaje, descuento),
+    cobrado: !!body.cobrado,
   };
 }
 
