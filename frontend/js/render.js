@@ -13,6 +13,7 @@ import { renderTicker } from './ui/ticker.js';
 import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
 import { renderComisiones } from './ui/comisiones.js';
+import { renderHistorico } from './ui/historico.js';
 
 function productosActivosIds() {
   return new Set(state.productos.filter((p) => p.estado !== 'concluido').map((p) => p.id));
@@ -78,4 +79,5 @@ export async function renderAll() {
   renderRepositorio();
   renderReportesPreview();
   renderComisiones();
+  renderHistorico();
 }

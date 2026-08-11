@@ -15,6 +15,7 @@ import { initWaModulo } from './ui/wa-modulo.js';
 import { initRepositorio } from './ui/repositorio.js';
 import { initReportes } from './ui/reportes.js';
 import { initComisiones } from './ui/comisiones.js';
+import { initHistorico } from './ui/historico.js';
 
 async function init() {
   document.getElementById('v-fecha').value = new Date().toISOString().slice(0, 10);
@@ -36,6 +37,7 @@ async function init() {
   initRepositorio();
   initReportes();
   initComisiones();
+  initHistorico();
 
   const result = await loadState();
   if (!result.ok) {

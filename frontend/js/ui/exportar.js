@@ -1,6 +1,7 @@
 import { state } from '../state.js';
 import { fmt } from '../format.js';
 import { showToast } from '../toast.js';
+import { descargarExcel } from '../xlsx-export.js';
 
 export function initExportar() {
   document.getElementById('exp-diplomado-select').addEventListener('change', renderExportView);
@@ -12,19 +13,19 @@ export function initExportar() {
 
     if (list.length === 0) return alert('No hay alumnos para exportar.');
 
-    let csv = 'Alumno,CI,Telefono,Diplomado,Empresa,Cargo,Fecha,Monto,Descuento(%),Comision\n';
-    list.forEach((v) => {
+    const filas = list.map((v) => {
       const prod = state.productos.find((x) => x.id === v.productoId);
-      csv += `"${v.cliente}","${v.ci || ''}","${v.telefono || ''}","${prod ? prod.nombre : ''}","${v.empresa || ''}","${v.cargo || ''}","${v.fecha}",${v.monto},${v.descuento || 0},${v.comision}\n`;
+      return [v.cliente, v.ci || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.cargo || '', v.fecha, v.monto, v.descuento || 0, v.comision];
     });
 
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `Alumnos_Exportados_${selId}_${new Date().toISOString().slice(0, 10)}.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
+    descargarExcel(`Alumnos_Exportados_${selId}_${new Date().toISOString().slice(0, 10)}.xls`, [
+      {
+        nombre: 'Alumnos',
+        headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Cargo', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
+        filas,
+        anchos: [140, 90, 100, 200, 130, 110, 90, 100, 90, 100],
+      },
+    ]);
     showToast('Base descargada correctamente.');
   });
 }

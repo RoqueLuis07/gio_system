@@ -160,6 +160,30 @@
         </div>
       </div>
 
+      <div class="form-card">
+        <div class="section-label" style="margin-top:0;">Histórico Mensual <span class="hint">Comisiones, recaudación y ventas por mes</span></div>
+        <div class="form-row cols3">
+          <div>
+            <label>Seleccionar Mes</label>
+            <select id="hist-mes-select"></select>
+          </div>
+        </div>
+        <div class="hero-grid" style="margin-top:14px; margin-bottom:0;">
+          <div class="stat-card">
+            <div class="stat-label">Comisión del Mes</div>
+            <div class="stat-value gold mono" id="hist-comision">₲ 0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Recaudado del Mes</div>
+            <div class="stat-value mono" id="hist-recaudado">₲ 0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Ventas del Mes</div>
+            <div class="stat-value teal mono" id="hist-ventas">0</div>
+          </div>
+        </div>
+      </div>
+
       <div class="section-label">Últimas Inscripciones Registradas</div>
       <div class="table-wrap" id="dash-recent"></div>
     </section>
@@ -430,7 +454,7 @@
             <select id="exp-diplomado-select"></select>
           </div>
           <div style="display:flex; align-items:flex-end;">
-            <button class="btn wide" id="exp-download-btn">⬇️ Descargar Base CSV</button>
+            <button class="btn wide" id="exp-download-btn">⬇️ Descargar Base (Excel)</button>
           </div>
         </div>
       </div>
