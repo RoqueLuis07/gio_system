@@ -1,6 +1,7 @@
 import { state } from '../state.js';
 import { fmt } from '../format.js';
 import { showToast } from '../toast.js';
+import { descargarExcel } from '../xlsx-export.js';
 
 function ventasEnRango() {
   const desde = document.getElementById('rep-fecha-inicio').value;
@@ -17,39 +18,6 @@ function rangoParaNombre() {
   const desde = document.getElementById('rep-fecha-inicio').value || 'inicio';
   const hasta = document.getElementById('rep-fecha-fin').value || 'hoy';
   return `${desde}_a_${hasta}`;
-}
-
-function xmlEscape(v) {
-  return String(v ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-}
-
-function celda(valor) {
-  if (typeof valor === 'number') {
-    return `<Cell><Data ss:Type="Number">${valor}</Data></Cell>`;
-  }
-  return `<Cell><Data ss:Type="String">${xmlEscape(valor)}</Data></Cell>`;
-}
-
-function hojaXml(nombreHoja, headers, filas) {
-  const filaHeaders = `<Row>${headers.map((h) => celda(h)).join('')}</Row>`;
-  const filasDatos = filas.map((fila) => `<Row>${fila.map((c) => celda(c)).join('')}</Row>`).join('');
-  return `<Worksheet ss:Name="${xmlEscape(nombreHoja)}"><Table>${filaHeaders}${filasDatos}</Table></Worksheet>`;
-}
-
-function descargarExcel(nombre, hojas) {
-  const xml = `<?xml version="1.0"?>
-<?mso-application progid="Excel.Sheet"?>
-<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
-${hojas.map((h) => hojaXml(h.nombre, h.headers, h.filas)).join('\n')}
-</Workbook>`;
-
-  const blob = new Blob([xml], { type: 'application/vnd.ms-excel' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = nombre;
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 export function initReportes() {
@@ -78,8 +46,18 @@ export function initReportes() {
     });
 
     descargarExcel(`Reporte_Ventas_${rangoParaNombre()}.xls`, [
-      { nombre: 'Por Diplomado', headers: ['Diplomado', 'Cantidad de Alumnos', 'Monto Total', 'Comision Total'], filas: filasDiplomado },
-      { nombre: 'Por Alumnos', headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'], filas: filasAlumnos },
+      {
+        nombre: 'Por Diplomado',
+        headers: ['Diplomado', 'Cantidad de Alumnos', 'Monto Total', 'Comision Total'],
+        filas: filasDiplomado,
+        anchos: [220, 140, 120, 120],
+      },
+      {
+        nombre: 'Por Alumnos',
+        headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
+        filas: filasAlumnos,
+        anchos: [140, 90, 100, 180, 130, 90, 100, 90, 100],
+      },
     ]);
     showToast('Reporte descargado (hojas: Por Diplomado y Por Alumnos).');
   });
