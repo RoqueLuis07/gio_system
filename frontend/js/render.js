@@ -12,6 +12,11 @@ import { renderWaModuloOptions } from './ui/wa-modulo.js';
 import { renderTicker } from './ui/ticker.js';
 import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
+import { renderComisiones } from './ui/comisiones.js';
+
+function productosActivosIds() {
+  return new Set(state.productos.filter((p) => p.estado !== 'concluido').map((p) => p.id));
+}
 
 function updateMetaGauge() {
   const circle = document.getElementById('meta-gauge-circle');
@@ -19,8 +24,9 @@ function updateMetaGauge() {
   const labelEl = document.getElementById('meta-gauge-label');
   if (!circle) return;
 
-  const totalMeta = state.productos.reduce((s, p) => s + (p.meta || 0), 0) || 1;
-  const totalAlumnos = state.ventas.length;
+  const activosIds = productosActivosIds();
+  const totalMeta = state.productos.filter((p) => p.estado !== 'concluido').reduce((s, p) => s + (p.meta || 0), 0) || 1;
+  const totalAlumnos = state.ventas.filter((v) => activosIds.has(v.productoId)).length;
   const pct = Math.max(0, Math.min(100, (totalAlumnos / totalMeta) * 100));
 
   const r = 54;
@@ -49,7 +55,11 @@ export async function renderAll() {
   renderPerfil();
   renderParametros();
 
-  document.getElementById('stat-ganancia').textContent = fmt(state.ventas.reduce((s, v) => s + v.comision, 0));
+  const activosIds = productosActivosIds();
+  const comisionPendiente = state.ventas
+    .filter((v) => !v.cobrado && activosIds.has(v.productoId))
+    .reduce((s, v) => s + v.comision, 0);
+  document.getElementById('stat-ganancia').textContent = fmt(comisionPendiente);
   document.getElementById('stat-monto-total').textContent = fmt(state.ventas.reduce((s, v) => s + v.monto, 0));
   document.getElementById('stat-ventas').textContent = state.ventas.length;
   document.getElementById('stat-diplomados').textContent = state.productos.filter((p) => p.estado !== 'concluido').length;
@@ -67,4 +77,5 @@ export async function renderAll() {
   renderTicker();
   renderRepositorio();
   renderReportesPreview();
+  renderComisiones();
 }
