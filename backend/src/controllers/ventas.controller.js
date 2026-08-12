@@ -57,6 +57,7 @@ function parseCsvLine(line, productoId, defaultMonto) {
     porcentaje,
     descuento,
     comision: calcularComision(monto, porcentaje, descuento),
+    cobrado: false,
   };
 }
 
