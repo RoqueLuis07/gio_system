@@ -16,6 +16,7 @@ import { renderComisiones } from './ui/comisiones.js';
 import { renderHistorico } from './ui/historico.js';
 import { renderDiplomadosConcluidos } from './ui/diplomados-concluidos.js';
 import { renderNavOrden } from './ui/nav-orden.js';
+import { renderFuturosClientes } from './ui/futuros-clientes.js';
 
 function productosActivosIds() {
   return new Set(state.productos.filter((p) => p.estado !== 'concluido').map((p) => p.id));
@@ -83,4 +84,5 @@ export async function renderAll() {
   renderComisiones();
   renderHistorico();
   renderNavOrden();
+  renderFuturosClientes();
 }
