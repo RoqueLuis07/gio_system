@@ -17,6 +17,7 @@ import { initReportes } from './ui/reportes.js';
 import { initComisiones } from './ui/comisiones.js';
 import { initHistorico } from './ui/historico.js';
 import { initDiplomadosConcluidos } from './ui/diplomados-concluidos.js';
+import { initNavOrden } from './ui/nav-orden.js';
 
 async function init() {
   document.getElementById('v-fecha').value = new Date().toISOString().slice(0, 10);
@@ -40,6 +41,7 @@ async function init() {
   initComisiones();
   initHistorico();
   initDiplomadosConcluidos();
+  initNavOrden();
 
   const result = await loadState();
   if (!result.ok) {

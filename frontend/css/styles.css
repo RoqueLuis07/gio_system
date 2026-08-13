@@ -52,7 +52,14 @@ body{ background:radial-gradient(ellipse at top, var(--bg-2), var(--bg) 60%); co
 .navbtn:hover{ background:rgba(255,255,255,0.05); color:var(--text); }
 .navbtn.active{ background:linear-gradient(90deg, rgba(var(--violet-rgb),0.18), rgba(var(--teal-rgb),0.08)); color:var(--text); font-weight:600; box-shadow:inset 2px 0 0 var(--teal); }
 .navbtn svg{ width:18px; height:18px; opacity:.9; flex-shrink:0; }
-.sidebar-foot{ margin-top:auto; font-size:11px; color:var(--text-faint); padding:10px 8px; border-top:1px solid var(--border); line-height:1.5; }
+.sidebar-foot{ margin-top:auto; font-size:11px; color:var(--text-faint); padding:10px 8px; border-top:1px solid var(--border); line-height:1.5; order:999; }
+
+.nav-orden-row{ display:flex; align-items:center; justify-content:space-between; gap:10px; padding:10px 12px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; background:var(--surface-3); }
+.nav-orden-row .nav-orden-label{ font-size:13.5px; color:var(--text); }
+.nav-orden-row .nav-orden-btns{ display:flex; gap:6px; }
+.nav-orden-row button{ background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text-dim); border-radius:7px; width:28px; height:28px; cursor:pointer; font-size:13px; }
+.nav-orden-row button:hover:not(:disabled){ background:rgba(255,255,255,0.12); color:var(--text); }
+.nav-orden-row button:disabled{ opacity:0.3; cursor:not-allowed; }
 
 main{ flex:1; padding:34px 40px; max-width:1280px; }
 .view{ display:none; }
