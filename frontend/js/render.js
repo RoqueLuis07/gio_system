@@ -14,6 +14,7 @@ import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
 import { renderComisiones } from './ui/comisiones.js';
 import { renderHistorico } from './ui/historico.js';
+import { renderDiplomadosConcluidos } from './ui/diplomados-concluidos.js';
 
 function productosActivosIds() {
   return new Set(state.productos.filter((p) => p.estado !== 'concluido').map((p) => p.id));
@@ -68,7 +69,7 @@ export async function renderAll() {
 
   renderProductosCards('dash-cards', { filter: 'activos' });
   renderProductosCards('productos-cards', { filter: 'activos' });
-  renderProductosCards('productos-cards-concluidos', { filter: 'concluidos' });
+  renderDiplomadosConcluidos();
   renderVentasTable();
   renderRecordatorios();
   renderCRM();
