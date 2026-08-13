@@ -2,6 +2,7 @@ import { api } from '../api.js';
 import { state } from '../state.js';
 import { showToast } from '../toast.js';
 import { renderAll } from '../render.js';
+import { abrirWhatsapp } from '../whatsapp.js';
 
 let modoActual = 'new';
 
@@ -140,18 +141,12 @@ export function initWaModulo() {
   });
 
   document.getElementById('wa2-send-btn').addEventListener('click', () => {
-    let tel = document.getElementById('wa2-telefono').value.replace(/\D/g, '');
-    const txt = encodeURIComponent(document.getElementById('wa2-preview').value);
+    const tel = document.getElementById('wa2-telefono').value;
+    const txt = document.getElementById('wa2-preview').value;
 
-    if (!tel) return alert('Ingresa un número de teléfono válido.');
+    if (!tel.replace(/\D/g, '')) return alert('Ingresa un número de teléfono válido.');
 
-    if (tel.startsWith('0')) {
-      tel = '595' + tel.substring(1);
-    } else if (!tel.startsWith('595')) {
-      tel = '595' + tel;
-    }
-
-    window.open(`https://api.whatsapp.com/send?phone=${tel}&text=${txt}`, '_blank');
+    abrirWhatsapp(tel, txt);
   });
 
   aplicarModoEditor();
