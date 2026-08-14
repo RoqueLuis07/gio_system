@@ -11,7 +11,7 @@ const TABLES = {
   },
   ventas: {
     columns: {
-      id: 'id', productoId: 'producto_id', cliente: 'cliente', telefono: 'telefono', ci: 'ci',
+      id: 'id', productoId: 'producto_id', cliente: 'cliente', telefono: 'telefono', ci: 'ci', email: 'email',
       empresa: 'empresa', cargo: 'cargo', metodoPago: 'metodo_pago', fecha: 'fecha',
       monto: 'monto', porcentaje: 'porcentaje', comision: 'comision', descuento: 'descuento', cobrado: 'cobrado',
     },
@@ -25,6 +25,9 @@ const TABLES = {
   },
   plantillas: {
     columns: { id: 'id', titulo: 'titulo', cuerpo: 'cuerpo' },
+  },
+  enlaces: {
+    columns: { id: 'id', titulo: 'titulo', url: 'url' },
   },
 };
 
@@ -174,7 +177,7 @@ async function removeArchivo(id) {
 }
 
 async function getState() {
-  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos] = await Promise.all([
+  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces] = await Promise.all([
     getCollection('usuarios'),
     getCollection('productos'),
     getCollection('ventas'),
@@ -183,8 +186,9 @@ async function getState() {
     getCollection('plantillas'),
     getCollection('parametros'),
     listArchivos(),
+    getCollection('enlaces'),
   ]);
-  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos };
+  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces };
 }
 
 module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, removeArchivo };

@@ -227,7 +227,7 @@
 
       <div class="form-card" style="border-color:var(--teal);">
         <h3 style="color:var(--teal); margin-top:0;">📥 Carga Masiva de Alumnos (CSV / Texto)</h3>
-        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:14px;">Pega una lista de alumnos separados por comas. Formato por línea: <br><code>Nombre, Teléfono, Empresa, Monto, CI, Descuento(%)</code> — CI y Descuento son opcionales.</p>
+        <p style="font-size:12.5px; color:var(--text-dim); margin-bottom:14px;">Pega una lista de alumnos separados por comas. Formato por línea: <br><code>Nombre, Teléfono, Empresa, Monto, CI, Descuento(%), Email</code> — CI, Descuento y Email son opcionales.</p>
 
         <div class="form-row cols2">
           <div>
@@ -241,7 +241,7 @@
         </div>
 
         <label>Lista de Alumnos (Pega aquí tus datos)</label>
-        <textarea id="csv-text-input" placeholder="Juan Pérez, 0981123456, Banco Itaú, 1200000, 4512389, 10&#10;María González, 0982555666, Particular, 1200000"></textarea>
+        <textarea id="csv-text-input" placeholder="Juan Pérez, 0981123456, Banco Itaú, 1200000, 4512389, 10, juan@correo.com&#10;María González, 0982555666, Particular, 1200000"></textarea>
 
         <button class="btn wa wide" id="csv-process-btn" style="margin-top:12px;">🚀 Cargar Todos los Alumnos en Masa</button>
       </div>
@@ -403,11 +403,18 @@
           </div>
         </div>
 
-        <div class="form-row">
+        <div class="form-row cols2">
           <div>
             <label>Cédula (CI)</label>
             <input id="v-ci" class="mono-input" placeholder="Ej. 4.512.389" />
           </div>
+          <div>
+            <label>Correo Electrónico</label>
+            <input id="v-email" type="email" placeholder="Ej. miguel@correo.com" />
+          </div>
+        </div>
+
+        <div class="form-row cols3">
           <div>
             <label>Descuento Cliente (%)</label>
             <input id="v-descuento" class="mono-input" type="number" step="0.1" value="0" />
@@ -661,6 +668,24 @@
 
       <div class="section-label">Archivos Guardados</div>
       <div class="cards-grid" id="repositorio-grid"></div>
+
+      <div class="form-card">
+        <h3 style="margin-top:0;">🔗 Guardar Enlace / URL</h3>
+        <div class="form-row cols3">
+          <div>
+            <label>Título</label>
+            <input id="rep-enlace-titulo" placeholder="Ej. Drive de Flyers 2026" />
+          </div>
+          <div style="grid-column: span 2;">
+            <label>URL</label>
+            <input id="rep-enlace-url" placeholder="Ej. https://drive.google.com/..." />
+          </div>
+        </div>
+        <button class="btn wide" id="rep-enlace-submit">💾 Guardar Enlace</button>
+      </div>
+
+      <div class="section-label">Enlaces Guardados</div>
+      <div class="cards-grid" id="repositorio-enlaces-grid"></div>
     </section>
 
     <!-- CONFIGURACIÓN -->

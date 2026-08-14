@@ -22,6 +22,7 @@ function buildVenta(body) {
     cliente,
     telefono: body.telefono || '',
     ci: (body.ci || '').trim(),
+    email: (body.email || '').trim(),
     empresa: body.empresa || '',
     cargo: body.cargo || '',
     metodoPago: body.metodoPago || '',
@@ -34,10 +35,10 @@ function buildVenta(body) {
   };
 }
 
-// Parses lines like "Nombre, Telefono, Empresa, Monto, CI, Descuento" into venta entries.
+// Parses lines like "Nombre, Telefono, Empresa, Monto, CI, Descuento, Email" into venta entries.
 function parseCsvLine(line, productoId, defaultMonto) {
   const cols = line.split(',').map((s) => s.trim());
-  const [nombre, telefono, empresa, montoRaw, ci, descuentoRaw] = cols;
+  const [nombre, telefono, empresa, montoRaw, ci, descuentoRaw, email] = cols;
   if (!nombre) return null;
 
   const monto = Number(String(montoRaw || '').replace(/\D/g, '')) || defaultMonto || 0;
@@ -49,6 +50,7 @@ function parseCsvLine(line, productoId, defaultMonto) {
     cliente: nombre,
     telefono: telefono || '',
     ci: (ci || '').trim(),
+    email: (email || '').trim(),
     empresa: empresa || 'Particular',
     cargo: '',
     metodoPago: '',

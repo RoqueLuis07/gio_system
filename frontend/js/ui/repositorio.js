@@ -38,6 +38,26 @@ export function initRepositorio() {
       alert(err.message);
     }
   });
+
+  document.getElementById('rep-enlace-submit').addEventListener('click', async () => {
+    const tituloInput = document.getElementById('rep-enlace-titulo');
+    const urlInput = document.getElementById('rep-enlace-url');
+    const titulo = tituloInput.value.trim();
+    const url = urlInput.value.trim();
+
+    if (!titulo || !url) return alert('Completa el título y la URL del enlace.');
+
+    try {
+      const enlace = await api.enlaces.create({ titulo, url });
+      state.enlaces.unshift(enlace);
+      tituloInput.value = '';
+      urlInput.value = '';
+      renderEnlaces();
+      showToast('Enlace guardado con éxito.');
+    } catch (err) {
+      alert(err.message);
+    }
+  });
 }
 
 window.borrarArchivo = async function borrarArchivo(id) {
@@ -47,6 +67,18 @@ window.borrarArchivo = async function borrarArchivo(id) {
     state.archivos = state.archivos.filter((a) => a.id !== id);
     renderRepositorio();
     showToast('Archivo eliminado.');
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
+window.borrarEnlace = async function borrarEnlace(id) {
+  if (!confirm('¿Seguro que deseas eliminar este enlace?')) return;
+  try {
+    await api.enlaces.remove(id);
+    state.enlaces = state.enlaces.filter((e) => e.id !== id);
+    renderEnlaces();
+    showToast('Enlace eliminado.');
   } catch (err) {
     alert(err.message);
   }
@@ -71,6 +103,36 @@ export function renderRepositorio() {
       <div class="diploma-actions">
         <a class="btn secondary btn-sm" href="${a.url}" target="_blank" rel="noopener noreferrer">👁️ Ver</a>
         <button class="btn danger btn-sm" onclick="borrarArchivo('${a.id}')">🗑️ Borrar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function dominioDe(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch (err) {
+    return url;
+  }
+}
+
+export function renderEnlaces() {
+  const el = document.getElementById('repositorio-enlaces-grid');
+  if (!el) return;
+
+  if (state.enlaces.length === 0) {
+    el.innerHTML = `<div class="empty-state">No hay enlaces guardados todavía.</div>`;
+    return;
+  }
+
+  el.innerHTML = state.enlaces.map((e) => `
+    <div class="diploma-card">
+      <div style="width:100%; height:80px; display:flex; align-items:center; justify-content:center; font-size:36px; background:rgba(255,255,255,0.03); border-radius:10px; margin-bottom:12px;">🔗</div>
+      <div class="diploma-title" style="font-size:14px;" title="${e.titulo}">${e.titulo}</div>
+      <div class="diploma-price" title="${e.url}">${dominioDe(e.url)}</div>
+      <div class="diploma-actions">
+        <a class="btn secondary btn-sm" href="${e.url}" target="_blank" rel="noopener noreferrer">🔗 Abrir</a>
+        <button class="btn danger btn-sm" onclick="borrarEnlace('${e.id}')">🗑️ Borrar</button>
       </div>
     </div>
   `).join('');

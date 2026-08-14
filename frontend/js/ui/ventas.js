@@ -23,6 +23,7 @@ export function initVentas() {
       cliente,
       telefono: document.getElementById('v-telefono').value,
       ci: document.getElementById('v-ci').value,
+      email: document.getElementById('v-email').value,
       empresa: document.getElementById('v-empresa').value,
       cargo: document.getElementById('v-cargo').value,
       metodoPago: document.getElementById('v-metodo-pago').value,
@@ -48,6 +49,7 @@ export function initVentas() {
 
       document.getElementById('v-cliente').value = '';
       document.getElementById('v-ci').value = '';
+      document.getElementById('v-email').value = '';
       document.getElementById('v-descuento').value = '0';
       await renderAll();
     } catch (err) {
@@ -65,6 +67,7 @@ window.editarVenta = function editarVenta(id) {
   document.getElementById('v-cliente').value = v.cliente;
   document.getElementById('v-telefono').value = v.telefono || '';
   document.getElementById('v-ci').value = v.ci || '';
+  document.getElementById('v-email').value = v.email || '';
   document.getElementById('v-empresa').value = v.empresa || '';
   document.getElementById('v-cargo').value = v.cargo || '';
   document.getElementById('v-metodo-pago').value = v.metodoPago || '';
@@ -118,6 +121,7 @@ export function renderVentasTable() {
       <tr>
         <td><b>${v.cliente}</b></td>
         <td class="mono">${v.ci || '—'}</td>
+        <td>${v.email || '—'}</td>
         <td><span class="pill">${p ? p.nombre : 'Eliminado'}</span></td>
         <td>${v.empresa || 'Particular'}</td>
         <td class="mono">${v.fecha}</td>
@@ -132,5 +136,5 @@ export function renderVentasTable() {
   }).join('');
 
   if (dashEl) dashEl.innerHTML = `<table><thead><tr><th>Alumno</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>${rowsDash.slice(0, 5).join('')}</tbody></table>`;
-  if (el) el.innerHTML = `<table><thead><tr><th>Alumno</th><th>CI</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
+  if (el) el.innerHTML = `<table><thead><tr><th>Alumno</th><th>CI</th><th>Email</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
