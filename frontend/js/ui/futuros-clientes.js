@@ -28,15 +28,15 @@ export function initFuturosClientes() {
 
     const filas = sugerencias.map((v) => {
       const prod = state.productos.find((p) => p.id === v.productoId);
-      return [v.cliente, v.telefono || '', v.empresa || '', v.cargo || '', prod ? prod.nombre : '', v.fecha];
+      return [v.cliente, v.telefono || '', v.email || '', v.empresa || '', v.cargo || '', prod ? prod.nombre : '', v.fecha];
     });
 
     descargarExcel(`Futuros_Clientes_${cargo.replace(/[^a-zA-Z0-9]+/g, '_')}.xls`, [
       {
         nombre: 'Sugerencias',
-        headers: ['Cliente', 'Telefono', 'Empresa', 'Cargo', 'Ultimo Diplomado', 'Fecha'],
+        headers: ['Cliente', 'Telefono', 'Email', 'Empresa', 'Cargo', 'Ultimo Diplomado', 'Fecha'],
         filas,
-        anchos: [140, 100, 130, 110, 200, 90],
+        anchos: [140, 100, 170, 130, 110, 200, 90],
       },
     ]);
     showToast('Sugerencias exportadas correctamente.');

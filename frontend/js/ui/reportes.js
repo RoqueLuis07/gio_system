@@ -42,7 +42,7 @@ export function initReportes() {
 
     const filasAlumnos = ventas.map((v) => {
       const prod = state.productos.find((p) => p.id === v.productoId);
-      return [v.cliente, v.ci || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.fecha, v.monto, v.descuento || 0, v.comision];
+      return [v.cliente, v.ci || '', v.email || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.fecha, v.monto, v.descuento || 0, v.comision];
     });
 
     descargarExcel(`Reporte_Ventas_${rangoParaNombre()}.xls`, [
@@ -54,9 +54,9 @@ export function initReportes() {
       },
       {
         nombre: 'Por Alumnos',
-        headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
+        headers: ['Alumno', 'CI', 'Email', 'Telefono', 'Diplomado', 'Empresa', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
         filas: filasAlumnos,
-        anchos: [140, 90, 100, 180, 130, 90, 100, 90, 100],
+        anchos: [140, 90, 170, 100, 180, 130, 90, 100, 90, 100],
       },
     ]);
     showToast('Reporte descargado (hojas: Por Diplomado y Por Alumnos).');

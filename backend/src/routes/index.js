@@ -12,5 +12,6 @@ router.use('/recordatorios', require('./recordatorios.routes'));
 router.use('/plantillas', require('./plantillas.routes'));
 router.use('/parametros', require('./parametros.routes'));
 router.use('/archivos', require('./archivos.routes'));
+router.use('/enlaces', require('./enlaces.routes'));
 
 module.exports = router;

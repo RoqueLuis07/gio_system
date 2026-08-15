@@ -12,6 +12,7 @@ module.exports = {
         plantillas: db.plantillas,
         parametros: db.parametros,
         archivos: db.archivos,
+        enlaces: db.enlaces,
       });
     } catch (err) {
       res.status(500).json({ error: err.message });

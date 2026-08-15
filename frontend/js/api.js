@@ -81,4 +81,9 @@ export const api = {
     upload: (formData) => requestForm('POST', '/archivos', formData),
     remove: (id) => request('DELETE', `/archivos/${id}`),
   },
+
+  enlaces: {
+    create: (data) => request('POST', '/enlaces', data),
+    remove: (id) => request('DELETE', `/enlaces/${id}`),
+  },
 };

@@ -15,15 +15,15 @@ export function initExportar() {
 
     const filas = list.map((v) => {
       const prod = state.productos.find((x) => x.id === v.productoId);
-      return [v.cliente, v.ci || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.cargo || '', v.fecha, v.monto, v.descuento || 0, v.comision];
+      return [v.cliente, v.ci || '', v.email || '', v.telefono || '', prod ? prod.nombre : '', v.empresa || '', v.cargo || '', v.fecha, v.monto, v.descuento || 0, v.comision];
     });
 
     descargarExcel(`Alumnos_Exportados_${selId}_${new Date().toISOString().slice(0, 10)}.xls`, [
       {
         nombre: 'Alumnos',
-        headers: ['Alumno', 'CI', 'Telefono', 'Diplomado', 'Empresa', 'Cargo', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
+        headers: ['Alumno', 'CI', 'Email', 'Telefono', 'Diplomado', 'Empresa', 'Cargo', 'Fecha', 'Monto', 'Descuento(%)', 'Comision'],
         filas,
-        anchos: [140, 90, 100, 200, 130, 110, 90, 100, 90, 100],
+        anchos: [140, 90, 170, 100, 200, 130, 110, 90, 100, 90, 100],
       },
     ]);
     showToast('Base descargada correctamente.');
@@ -56,6 +56,7 @@ export function renderExportView() {
         <tr>
           <th>Alumno</th>
           <th>CI</th>
+          <th>Email</th>
           <th>Teléfono</th>
           <th>Diplomado</th>
           <th>Empresa</th>
@@ -71,6 +72,7 @@ export function renderExportView() {
             <tr>
               <td><b>${v.cliente}</b></td>
               <td class="mono">${v.ci || '—'}</td>
+              <td>${v.email || '—'}</td>
               <td>${v.telefono || '—'}</td>
               <td><span class="pill">${prod ? prod.nombre : 'Desconocido'}</span></td>
               <td>${v.empresa || 'Particular'}</td>
