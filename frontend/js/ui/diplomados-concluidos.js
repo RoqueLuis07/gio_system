@@ -28,7 +28,7 @@ function exportarAlumnosDelDiplomado(productoId) {
 function onFilaClick(e) {
   const tr = e.target.closest('tr[data-concluido-id]');
   if (!tr) return;
-  selectedId = tr.dataset.concluidoId;
+  selectedId = selectedId === tr.dataset.concluidoId ? null : tr.dataset.concluidoId;
   renderDiplomadosConcluidos();
 }
 
