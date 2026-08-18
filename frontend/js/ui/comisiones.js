@@ -26,7 +26,7 @@ function filaProducto(p) {
 function onFilaClick(e) {
   const tr = e.target.closest('tr[data-com-producto-id]');
   if (!tr) return;
-  selectedProductoId = tr.dataset.comProductoId;
+  selectedProductoId = selectedProductoId === tr.dataset.comProductoId ? null : tr.dataset.comProductoId;
   renderComisiones();
 }
 

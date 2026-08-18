@@ -7,8 +7,24 @@ import { renderAll } from '../render.js';
 import { calcularEnTiempoReal } from './calculadora.js';
 
 let ventaEditId = null;
+let ventasBusqueda = '';
+let ventasPagina = 1;
+const VENTAS_POR_PAGINA = 10;
 
 export function initVentas() {
+  document.getElementById('ventas-buscar').addEventListener('input', (e) => {
+    ventasBusqueda = e.target.value.trim().toLowerCase();
+    ventasPagina = 1;
+    renderVentasTable();
+  });
+
+  document.getElementById('ventas-paginacion').addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-pagina]');
+    if (!btn) return;
+    ventasPagina = Number(btn.dataset.pagina);
+    renderVentasTable();
+  });
+
   document.getElementById('v-submit').addEventListener('click', async () => {
     const productoId = document.getElementById('v-producto').value;
     const cliente = document.getElementById('v-cliente').value.trim();
@@ -98,6 +114,44 @@ window.borrarVenta = async function borrarVenta(id) {
   }
 };
 
+function ventasFiltradas() {
+  if (!ventasBusqueda) return state.ventas;
+  return state.ventas.filter((v) => {
+    const nombre = (v.cliente || '').toLowerCase();
+    const ci = (v.ci || '').toLowerCase();
+    return nombre.includes(ventasBusqueda) || ci.includes(ventasBusqueda);
+  });
+}
+
+function renderVentasPaginacion(totalPaginas) {
+  const el = document.getElementById('ventas-paginacion');
+  if (!el) return;
+
+  if (totalPaginas <= 1) {
+    el.innerHTML = '';
+    return;
+  }
+
+  const paginas = [];
+  const ventana = 2;
+  for (let i = 1; i <= totalPaginas; i++) {
+    if (i === 1 || i === totalPaginas || Math.abs(i - ventasPagina) <= ventana) paginas.push(i);
+    else if (paginas[paginas.length - 1] !== '…') paginas.push('…');
+  }
+
+  const botones = paginas.map((p) => (
+    p === '…'
+      ? `<span class="pagina-ellipsis">…</span>`
+      : `<button data-pagina="${p}" class="${p === ventasPagina ? 'pagina-activa' : ''}">${p}</button>`
+  )).join('');
+
+  el.innerHTML = `
+    <button data-pagina="${ventasPagina - 1}" ${ventasPagina <= 1 ? 'disabled' : ''}>‹ Anterior</button>
+    ${botones}
+    <button data-pagina="${ventasPagina + 1}" ${ventasPagina >= totalPaginas ? 'disabled' : ''}>Siguiente ›</button>
+  `;
+}
+
 export function renderVentasTable() {
   const el = document.getElementById('ventas-table');
   const dashEl = document.getElementById('dash-recent');
@@ -115,7 +169,14 @@ export function renderVentasTable() {
     `;
   });
 
-  const rows = state.ventas.map((v) => {
+  const filtradas = ventasFiltradas();
+  const totalPaginas = Math.max(1, Math.ceil(filtradas.length / VENTAS_POR_PAGINA));
+  if (ventasPagina > totalPaginas) ventasPagina = totalPaginas;
+  if (ventasPagina < 1) ventasPagina = 1;
+  const inicio = (ventasPagina - 1) * VENTAS_POR_PAGINA;
+  const pagina = filtradas.slice(inicio, inicio + VENTAS_POR_PAGINA);
+
+  const rows = pagina.map((v) => {
     const p = state.productos.find((x) => x.id === v.productoId);
     return `
       <tr>
@@ -136,5 +197,10 @@ export function renderVentasTable() {
   }).join('');
 
   if (dashEl) dashEl.innerHTML = `<table><thead><tr><th>Alumno</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th></tr></thead><tbody>${rowsDash.slice(0, 5).join('')}</tbody></table>`;
-  if (el) el.innerHTML = `<table><thead><tr><th>Alumno</th><th>CI</th><th>Email</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`;
+  if (el) {
+    el.innerHTML = filtradas.length
+      ? `<table><thead><tr><th>Alumno</th><th>CI</th><th>Email</th><th>Diplomado</th><th>Empresa</th><th>Fecha</th><th>Monto</th><th>Comisión</th><th>Acción</th></tr></thead><tbody>${rows}</tbody></table>`
+      : `<div class="empty-state">No se encontraron ventas para "${ventasBusqueda}".</div>`;
+  }
+  renderVentasPaginacion(totalPaginas);
 }

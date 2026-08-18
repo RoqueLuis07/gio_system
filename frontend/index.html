@@ -7,6 +7,19 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/styles.css">
+<script>
+  (function () {
+    try {
+      var tema = localStorage.getItem('gmVentasProTema') || 'oscuro';
+      document.documentElement.setAttribute('data-theme', tema === 'claro' ? 'light' : 'dark');
+      var acentos = { violeta: '#7C6CFF', teal: '#2FD9C3', gold: '#E7B65C', coral: '#FF6B5D', azul: '#3B82F6', rosa: '#EC4899' };
+      var acento = acentos[localStorage.getItem('gmVentasProAcento')] || acentos.violeta;
+      var n = parseInt(acento.replace('#', ''), 16);
+      document.documentElement.style.setProperty('--violet', acento);
+      document.documentElement.style.setProperty('--violet-rgb', ((n >> 16) & 255) + ', ' + ((n >> 8) & 255) + ', ' + (n & 255));
+    } catch (err) {}
+  })();
+</script>
 </head>
 <body>
 
@@ -68,6 +81,10 @@
     <button class="navbtn" data-view="productos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 6 7 1-5 5 1 7-6-3-6 3 1-7-5-5 7-1z"/></svg>
       Diplomados &amp; Carga Masiva
+    </button>
+    <button class="navbtn" data-view="diplomados-concluidos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6L9 17l-5-5"/></svg>
+      Diplomados Concluidos
     </button>
     <button class="navbtn" data-view="reportes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
@@ -248,8 +265,13 @@
 
       <div class="section-label">Diplomados en Oferta</div>
       <div class="cards-grid" id="productos-cards"></div>
+    </section>
 
-      <div class="section-label">Diplomados Concluidos <span class="hint">Archivo de diplomados cerrados, con sus alumnos y ventas intactos</span></div>
+    <!-- DIPLOMADOS CONCLUIDOS -->
+    <section class="view" id="view-diplomados-concluidos">
+      <h1 class="pagetitle">Diplomados Concluidos</h1>
+      <p class="subtitle">Archivo de diplomados cerrados, con sus alumnos y ventas intactos.</p>
+
       <div class="table-wrap">
         <table>
           <thead><tr><th>Diplomado</th></tr></thead>
@@ -438,8 +460,11 @@
         <button class="btn wide" id="v-submit">✨ Registrar Venta Individual</button>
       </div>
 
-      <div class="section-label">Historial de Ventas</div>
+      <div class="section-label">Historial de Ventas
+        <input id="ventas-buscar" placeholder="🔎 Buscar por nombre o CI..." style="max-width:280px;" />
+      </div>
       <div class="table-wrap" id="ventas-table"></div>
+      <div id="ventas-paginacion" class="paginacion"></div>
     </section>
 
     <!-- CRM / PROSPECTOS -->
@@ -666,9 +691,6 @@
         <button class="btn wide" id="rep-archivo-submit">⬆️ Subir Archivo</button>
       </div>
 
-      <div class="section-label">Archivos Guardados</div>
-      <div class="cards-grid" id="repositorio-grid"></div>
-
       <div class="form-card">
         <h3 style="margin-top:0;">🔗 Guardar Enlace / URL</h3>
         <div class="form-row cols3">
@@ -684,8 +706,8 @@
         <button class="btn wide" id="rep-enlace-submit">💾 Guardar Enlace</button>
       </div>
 
-      <div class="section-label">Enlaces Guardados</div>
-      <div class="cards-grid" id="repositorio-enlaces-grid"></div>
+      <div class="section-label">Todo el Repositorio <span class="hint">Flyers, documentos, fotos y enlaces guardados</span></div>
+      <div class="cards-grid" id="repositorio-grid"></div>
     </section>
 
     <!-- CONFIGURACIÓN -->
@@ -704,6 +726,23 @@
         <h3>📋 Orden del Panel de Navegación</h3>
         <p style="font-size:12.5px; color:var(--text-dim); margin:6px 0 14px 0;">Usá las flechas para reordenar las secciones del menú lateral a tu gusto.</p>
         <div id="nav-orden-lista"></div>
+      </div>
+
+      <div class="form-card">
+        <h3>🎨 Apariencia del Sistema</h3>
+        <div class="form-row cols2" style="margin-top:14px;">
+          <div>
+            <label>Tema</label>
+            <select id="param-tema">
+              <option value="oscuro">Oscuro</option>
+              <option value="claro">Claro</option>
+            </select>
+          </div>
+          <div>
+            <label>Color de Acento</label>
+            <div id="param-acentos" style="display:flex; gap:10px; padding-top:6px;"></div>
+          </div>
+        </div>
       </div>
     </section>
   </main>

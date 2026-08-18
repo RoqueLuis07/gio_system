@@ -19,6 +19,7 @@ import { initHistorico } from './ui/historico.js';
 import { initDiplomadosConcluidos } from './ui/diplomados-concluidos.js';
 import { initNavOrden } from './ui/nav-orden.js';
 import { initFuturosClientes } from './ui/futuros-clientes.js';
+import { initTheme } from './ui/theme.js';
 
 async function init() {
   document.getElementById('v-fecha').value = new Date().toISOString().slice(0, 10);
@@ -44,6 +45,7 @@ async function init() {
   initDiplomadosConcluidos();
   initNavOrden();
   initFuturosClientes();
+  initTheme();
 
   const result = await loadState();
   if (!result.ok) {

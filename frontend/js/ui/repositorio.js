@@ -16,6 +16,14 @@ function esImagen(tipo) {
   return (tipo || '').startsWith('image/');
 }
 
+function dominioDe(url) {
+  try {
+    return new URL(url).hostname.replace(/^www\./, '');
+  } catch (err) {
+    return url;
+  }
+}
+
 export function initRepositorio() {
   document.getElementById('rep-archivo-submit').addEventListener('click', async () => {
     const input = document.getElementById('rep-archivo-input');
@@ -45,20 +53,38 @@ export function initRepositorio() {
     const titulo = tituloInput.value.trim();
     const url = urlInput.value.trim();
 
-    if (!titulo || !url) return alert('Completa el título y la URL del enlace.');
+    if (!titulo || !url) return alert('Ingresa título y URL del enlace.');
 
     try {
       const enlace = await api.enlaces.create({ titulo, url });
       state.enlaces.unshift(enlace);
       tituloInput.value = '';
       urlInput.value = '';
-      renderEnlaces();
+      renderRepositorio();
       showToast('Enlace guardado con éxito.');
     } catch (err) {
       alert(err.message);
     }
   });
 }
+
+window.editarArchivo = async function editarArchivo(id) {
+  const a = state.archivos.find((x) => x.id === id);
+  if (!a) return;
+
+  const nuevoNombre = prompt('Nuevo nombre del archivo:', a.nombre);
+  if (nuevoNombre === null) return;
+  if (!nuevoNombre.trim()) return alert('El nombre no puede estar vacío.');
+
+  try {
+    const actualizado = await api.archivos.rename(id, nuevoNombre.trim());
+    Object.assign(a, actualizado);
+    renderRepositorio();
+    showToast('Archivo renombrado.');
+  } catch (err) {
+    alert(err.message);
+  }
+};
 
 window.borrarArchivo = async function borrarArchivo(id) {
   if (!confirm('¿Seguro que deseas eliminar este archivo?')) return;
@@ -72,28 +98,42 @@ window.borrarArchivo = async function borrarArchivo(id) {
   }
 };
 
+window.editarEnlace = async function editarEnlace(id) {
+  const e = state.enlaces.find((x) => x.id === id);
+  if (!e) return;
+
+  const nuevoTitulo = prompt('Nuevo título del enlace:', e.titulo);
+  if (nuevoTitulo === null) return;
+  if (!nuevoTitulo.trim()) return alert('El título no puede estar vacío.');
+
+  const nuevaUrl = prompt('Nueva URL del enlace:', e.url);
+  if (nuevaUrl === null) return;
+  if (!nuevaUrl.trim()) return alert('La URL no puede estar vacía.');
+
+  try {
+    const actualizado = await api.enlaces.update(id, { titulo: nuevoTitulo.trim(), url: nuevaUrl.trim() });
+    Object.assign(e, actualizado);
+    renderRepositorio();
+    showToast('Enlace actualizado.');
+  } catch (err) {
+    alert(err.message);
+  }
+};
+
 window.borrarEnlace = async function borrarEnlace(id) {
   if (!confirm('¿Seguro que deseas eliminar este enlace?')) return;
   try {
     await api.enlaces.remove(id);
     state.enlaces = state.enlaces.filter((e) => e.id !== id);
-    renderEnlaces();
+    renderRepositorio();
     showToast('Enlace eliminado.');
   } catch (err) {
     alert(err.message);
   }
 };
 
-export function renderRepositorio() {
-  const el = document.getElementById('repositorio-grid');
-  if (!el) return;
-
-  if (state.archivos.length === 0) {
-    el.innerHTML = `<div class="empty-state">No hay archivos cargados todavía.</div>`;
-    return;
-  }
-
-  el.innerHTML = state.archivos.map((a) => `
+function tarjetaArchivo(a) {
+  return `
     <div class="diploma-card">
       ${esImagen(a.tipo)
         ? `<img src="${a.url}" alt="${a.nombre}" style="width:100%; height:140px; object-fit:cover; border-radius:10px; margin-bottom:12px;" />`
@@ -102,38 +142,36 @@ export function renderRepositorio() {
       <div class="diploma-price">${CATEGORIA_LABEL[a.categoria] || a.categoria} · ${formatBytes(a.tamano)}</div>
       <div class="diploma-actions">
         <a class="btn secondary btn-sm" href="${a.url}" target="_blank" rel="noopener noreferrer">👁️ Ver</a>
+        <button class="btn secondary btn-sm" onclick="editarArchivo('${a.id}')">✏️ Editar</button>
         <button class="btn danger btn-sm" onclick="borrarArchivo('${a.id}')">🗑️ Borrar</button>
       </div>
     </div>
-  `).join('');
+  `;
 }
 
-function dominioDe(url) {
-  try {
-    return new URL(url).hostname.replace(/^www\./, '');
-  } catch (err) {
-    return url;
-  }
-}
-
-export function renderEnlaces() {
-  const el = document.getElementById('repositorio-enlaces-grid');
-  if (!el) return;
-
-  if (state.enlaces.length === 0) {
-    el.innerHTML = `<div class="empty-state">No hay enlaces guardados todavía.</div>`;
-    return;
-  }
-
-  el.innerHTML = state.enlaces.map((e) => `
+function tarjetaEnlace(e) {
+  return `
     <div class="diploma-card">
-      <div style="width:100%; height:80px; display:flex; align-items:center; justify-content:center; font-size:36px; background:rgba(255,255,255,0.03); border-radius:10px; margin-bottom:12px;">🔗</div>
+      <div style="width:100%; height:140px; display:flex; align-items:center; justify-content:center; font-size:42px; background:rgba(255,255,255,0.03); border-radius:10px; margin-bottom:12px;">🔗</div>
       <div class="diploma-title" style="font-size:14px;" title="${e.titulo}">${e.titulo}</div>
-      <div class="diploma-price" title="${e.url}">${dominioDe(e.url)}</div>
+      <div class="diploma-price">Enlace · ${dominioDe(e.url)}</div>
       <div class="diploma-actions">
         <a class="btn secondary btn-sm" href="${e.url}" target="_blank" rel="noopener noreferrer">🔗 Abrir</a>
+        <button class="btn secondary btn-sm" onclick="editarEnlace('${e.id}')">✏️ Editar</button>
         <button class="btn danger btn-sm" onclick="borrarEnlace('${e.id}')">🗑️ Borrar</button>
       </div>
     </div>
-  `).join('');
+  `;
+}
+
+export function renderRepositorio() {
+  const el = document.getElementById('repositorio-grid');
+  if (!el) return;
+
+  if (state.archivos.length === 0 && state.enlaces.length === 0) {
+    el.innerHTML = `<div class="empty-state">No hay archivos ni enlaces guardados todavía.</div>`;
+    return;
+  }
+
+  el.innerHTML = state.archivos.map(tarjetaArchivo).join('') + state.enlaces.map(tarjetaEnlace).join('');
 }
