@@ -32,6 +32,19 @@ module.exports = {
     }
   },
 
+  async rename(req, res) {
+    try {
+      const nombre = (req.body.nombre || '').trim();
+      if (!nombre) return res.status(400).json({ error: 'Ingresa un nombre válido.' });
+
+      const archivo = await storage.renameArchivo(req.params.id, nombre);
+      if (!archivo) return res.status(404).json({ error: 'No encontrado' });
+      res.json(archivo);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
   async remove(req, res) {
     try {
       const removed = await storage.removeArchivo(req.params.id);

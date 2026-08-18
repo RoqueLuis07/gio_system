@@ -8,6 +8,7 @@ const router = Router();
 
 router.get('/', archivosController.list);
 router.post('/', upload.single('archivo'), archivosController.upload);
+router.put('/:id', archivosController.rename);
 router.delete('/:id', archivosController.remove);
 
 module.exports = router;

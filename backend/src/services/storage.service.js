@@ -161,6 +161,13 @@ async function insertArchivo({ id, nombre, categoria, tipo, buffer }) {
   return { id: data.id, nombre: data.nombre, categoria: data.categoria, tipo: data.tipo, url: data.url, tamano: Number(data.tamano) || 0, fecha: data.created_at };
 }
 
+async function renameArchivo(id, nombre) {
+  const { data, error } = await getClient().from('archivos').update({ nombre }).eq('id', id).select().single();
+  if (error) throw new Error(`Error renombrando el archivo: ${error.message}`);
+  if (!data) return null;
+  return { id: data.id, nombre: data.nombre, categoria: data.categoria, tipo: data.tipo, url: data.url, tamano: Number(data.tamano) || 0, fecha: data.created_at };
+}
+
 async function removeArchivo(id) {
   const supabase = getClient();
   const { data: row, error: selectError } = await supabase.from('archivos').select('ruta').eq('id', id).single();
@@ -191,4 +198,4 @@ async function getState() {
   return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces };
 }
 
-module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, removeArchivo };
+module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, renameArchivo, removeArchivo };

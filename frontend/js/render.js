@@ -10,7 +10,7 @@ import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
 import { renderTicker } from './ui/ticker.js';
-import { renderRepositorio, renderEnlaces } from './ui/repositorio.js';
+import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
 import { renderComisiones } from './ui/comisiones.js';
 import { renderHistorico } from './ui/historico.js';
@@ -80,7 +80,6 @@ export async function renderAll() {
   renderWaModuloOptions();
   renderTicker();
   renderRepositorio();
-  renderEnlaces();
   renderReportesPreview();
   renderComisiones();
   renderHistorico();

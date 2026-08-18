@@ -79,11 +79,13 @@ export const api = {
   archivos: {
     list: () => request('GET', '/archivos'),
     upload: (formData) => requestForm('POST', '/archivos', formData),
+    rename: (id, nombre) => request('PUT', `/archivos/${id}`, { nombre }),
     remove: (id) => request('DELETE', `/archivos/${id}`),
   },
 
   enlaces: {
     create: (data) => request('POST', '/enlaces', data),
+    update: (id, data) => request('PUT', `/enlaces/${id}`, data),
     remove: (id) => request('DELETE', `/enlaces/${id}`),
   },
 };
