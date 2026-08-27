@@ -143,16 +143,16 @@
      (queda una caja vacía) — se muestra en su lugar la foto de portada con un
      botón grande para abrir el PDF completo. */
   .hero-pdf-mobile-card{ display:none; }
-  .hero-pdf-mobile-img{ width:100%; height:100%; object-fit:cover; object-position:top; display:block; }
+  .hero-pdf-mobile-img{ width:100%; flex:1 1 auto; min-height:0; object-fit:cover; object-position:top; display:block; }
   .hero-pdf-mobile-placeholder{
-    width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:56px;
+    width:100%; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; font-size:56px;
     background:linear-gradient(160deg, #1b2350, #2a1a4a 55%, #3a1440);
   }
   @media (max-width:760px){
-    .hero-pdf-viewer{ min-height:420px; }
+    .hero-pdf-viewer{ height:min(80vh, 560px); min-height:460px; }
     .hero-pdf-viewer iframe, .hero-pdf-fallback{ display:none; }
     .hero-pdf-mobile-card{ display:flex; flex-direction:column; position:absolute; inset:0; }
-    .hero-pdf-mobile-card .btn-comprar{ margin:0; border-radius:0; width:100%; padding:16px; font-size:15px; justify-content:center; box-shadow:none; }
+    .hero-pdf-mobile-card .btn-comprar{ flex:0 0 auto; margin:0; border-radius:0; width:100%; padding:16px; font-size:15px; justify-content:center; box-shadow:none; }
   }
   .hero-pdf-side{
     background:linear-gradient(160deg, #1b2350, #2a1a4a 55%, #3a1440); border:1px solid var(--border); border-radius:20px;
