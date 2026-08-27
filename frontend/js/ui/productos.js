@@ -140,6 +140,7 @@ export function renderProductosCards(targetId, { filter } = {}) {
         <div class="diploma-actions">
           ${concluido ? '' : `<button class="btn btn-sm" onclick="venderDiplomadoDirecto('${p.id}')">🛍️ Vender</button>`}
           <button class="btn secondary btn-sm" onclick="editarDiplomado('${p.id}')">✏️ Editar</button>
+          <button class="btn secondary btn-sm" onclick="abrirModalPublicacion('${p.id}')">🌐 Publicación</button>
           <button class="btn secondary btn-sm" onclick="concluirDiplomado('${p.id}')">${concluido ? '↩️ Reabrir' : '✅ Concluir'}</button>
           <button class="btn danger btn-sm" onclick="borrarDiplomado('${p.id}')">🗑️ Borrar</button>
         </div>

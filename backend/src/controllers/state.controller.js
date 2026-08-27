@@ -13,6 +13,7 @@ module.exports = {
         parametros: db.parametros,
         archivos: db.archivos,
         enlaces: db.enlaces,
+        gruposEnvio: db.gruposEnvio,
       });
     } catch (err) {
       res.status(500).json({ error: err.message });

@@ -37,16 +37,56 @@ body{ background:radial-gradient(ellipse at top, var(--bg-2), var(--bg) 60%); co
 
 /* LOGIN OVERLAY */
 #login-overlay{
-  position:fixed; top:0; left:0; width:100vw; height:100vh;
-  background:var(--bg); z-index:99999; display:flex; align-items:center; justify-content:center;
-  background-image: radial-gradient(circle at 50% 30%, rgba(124,108,255,0.14), transparent 60%);
+  position:fixed; top:0; left:0; width:100vw; height:100vh; overflow:hidden;
+  background:#05060f; z-index:99999; display:flex; align-items:center; justify-content:center;
+}
+.login-orb{ position:absolute; border-radius:50%; filter:blur(70px); pointer-events:none; }
+.login-orb-1{ width:440px; height:440px; top:-140px; left:-100px; background:radial-gradient(circle, rgba(124,108,255,0.35), transparent 70%); animation:login-drift1 20s ease-in-out infinite; }
+.login-orb-2{ width:400px; height:400px; bottom:-140px; right:-100px; background:radial-gradient(circle, rgba(234,63,160,0.28), transparent 70%); animation:login-drift2 24s ease-in-out infinite; }
+.login-orb-3{ width:340px; height:340px; top:35%; left:60%; background:radial-gradient(circle, rgba(47,233,208,0.2), transparent 70%); animation:login-drift3 28s ease-in-out infinite; }
+@keyframes login-drift1{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(50px,40px); } }
+@keyframes login-drift2{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-40px,-50px); } }
+@keyframes login-drift3{ 0%,100%{ transform:translate(0,0); } 50%{ transform:translate(-30px,30px); } }
+.login-grid{
+  position:absolute; inset:0; pointer-events:none; opacity:0.35;
+  background-image: linear-gradient(rgba(124,108,255,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(124,108,255,0.08) 1px, transparent 1px);
+  background-size:46px 46px; mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent 75%);
+  -webkit-mask-image:radial-gradient(ellipse 70% 70% at 50% 50%, black, transparent 75%);
 }
 .login-card{
-  background:linear-gradient(180deg, rgba(18,26,46,0.8), rgba(18,26,46,0.5)); backdrop-filter:blur(14px);
-  border:1px solid var(--border); border-radius:18px; padding:36px; width:100%; max-width:380px; text-align:center;
+  position:relative; z-index:2;
+  background:linear-gradient(180deg, rgba(18,26,46,0.85), rgba(18,26,46,0.55)); backdrop-filter:blur(16px);
+  border:1px solid rgba(124,108,255,0.25); border-radius:20px; padding:40px 36px; width:100%; max-width:380px; text-align:center;
 }
-.login-card.card-glow{ box-shadow:0 0 0 1px rgba(var(--violet-rgb),0.25), 0 20px 60px -20px rgba(var(--violet-rgb),0.4); }
-.login-card h2{ font-family:'Space Grotesk', sans-serif; color:var(--text); margin:10px 0 20px 0; font-size:22px; font-weight:600; }
+.login-card.card-glow{
+  animation:login-glow-pulse 3.4s ease-in-out infinite;
+}
+@keyframes login-glow-pulse{
+  0%,100%{ box-shadow:0 0 0 1px rgba(124,108,255,0.3), 0 0 40px rgba(124,108,255,0.18), 0 24px 60px -20px rgba(0,0,0,0.6); }
+  50%{ box-shadow:0 0 0 1px rgba(47,233,208,0.4), 0 0 55px rgba(47,233,208,0.22), 0 24px 60px -20px rgba(0,0,0,0.6); }
+}
+.login-seal{
+  width:56px; height:56px; margin:0 auto 12px; border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:26px;
+  background:linear-gradient(135deg, rgba(124,108,255,0.35), rgba(47,233,208,0.25)); border:1px solid rgba(124,108,255,0.4);
+  box-shadow:0 0 24px rgba(124,108,255,0.35);
+}
+.login-brand{
+  font-family:'Space Grotesk', sans-serif; font-weight:800; font-size:24px; letter-spacing:-0.01em;
+  background:linear-gradient(90deg, var(--violet), var(--teal), var(--gold), var(--violet));
+  background-size:300% auto; -webkit-background-clip:text; background-clip:text; color:transparent;
+  animation:login-hue-shift 8s linear infinite;
+}
+@keyframes login-hue-shift{ to{ background-position:300% center; } }
+.login-card h2{ font-family:'Space Grotesk', sans-serif; color:var(--text); margin:10px 0 22px 0; font-size:20px; font-weight:600; }
+#login-overlay input{ transition:border-color 0.25s ease, box-shadow 0.25s ease; }
+#login-overlay input:focus{ outline:none; border-color:var(--teal); box-shadow:0 0 0 3px rgba(47,233,208,0.15); }
+.login-btn-glow{ position:relative; overflow:hidden; transition:box-shadow 0.3s ease, transform 0.15s ease; }
+.login-btn-glow:hover{ box-shadow:0 8px 26px -8px rgba(124,108,255,0.6); }
+.login-btn-glow:active{ transform:scale(0.98); }
+
+@media (prefers-reduced-motion: reduce){
+  .login-orb, .login-card.card-glow, .login-brand{ animation:none !important; }
+}
 
 .app{ display:flex; min-height:calc(100vh - 28px); position:relative; z-index:1; }
 .sidebar{ width:260px; flex-shrink:0; background:rgba(18,26,46,0.55); backdrop-filter:blur(16px); border-right:1px solid var(--border); padding:24px 16px; display:flex; flex-direction:column; gap:6px; position:sticky; top:28px; height:calc(100vh - 28px); overflow-y:auto; align-self:flex-start; }
@@ -257,3 +297,19 @@ tr.row-selected:hover td{ background:rgba(var(--teal-rgb),0.12); }
 .wa2-scope .btn.gold:hover{ background:var(--wa2-gold-hover); }
 .wa2-scope .btn.danger{ background:var(--wa2-danger); color:#fff; }
 .wa2-scope .btn.danger:hover{ background:var(--wa2-danger-hover); }
+
+/* EDITOR DE TEXTO ENRIQUECIDO */
+.rte-toolbar{ display:flex; gap:4px; margin-top:4px; margin-bottom:4px; flex-wrap:wrap; }
+.rte-toolbar button{
+  background:rgba(255,255,255,0.06); border:1px solid var(--border); color:var(--text);
+  border-radius:6px; padding:4px 9px; font-size:12px; cursor:pointer; line-height:1.4;
+}
+.rte-toolbar button:hover{ background:rgba(124,108,255,0.18); border-color:rgba(124,108,255,0.4); }
+.rte-editor{
+  min-height:70px; background:var(--surface, rgba(255,255,255,0.03)); border:1px solid var(--border); border-radius:8px;
+  padding:10px 12px; font-size:13.5px; color:var(--text); line-height:1.5; outline:none;
+}
+.rte-editor:focus{ border-color:var(--violet); }
+.rte-editor:empty::before{ content:attr(data-placeholder); color:var(--text-dim); }
+.rte-editor ul, .rte-editor ol{ margin:4px 0; padding-left:20px; }
+.rte-editor a{ color:var(--teal); }

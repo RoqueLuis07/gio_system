@@ -9,6 +9,7 @@ import { renderParametros } from './ui/parametros.js';
 import { renderPerfil } from './ui/auth.js';
 import { calcularEnTiempoReal } from './ui/calculadora.js';
 import { renderWaModuloOptions } from './ui/wa-modulo.js';
+import { renderEmailModuloOptions } from './ui/email-modulo.js';
 import { renderTicker } from './ui/ticker.js';
 import { renderRepositorio } from './ui/repositorio.js';
 import { renderReportesPreview } from './ui/reportes.js';
@@ -17,6 +18,7 @@ import { renderHistorico } from './ui/historico.js';
 import { renderDiplomadosConcluidos } from './ui/diplomados-concluidos.js';
 import { renderNavOrden } from './ui/nav-orden.js';
 import { renderFuturosClientes } from './ui/futuros-clientes.js';
+import { renderPaginaPublica } from './ui/pagina-publica.js';
 
 function productosActivosIds() {
   return new Set(state.productos.filter((p) => p.estado !== 'concluido').map((p) => p.id));
@@ -78,6 +80,7 @@ export async function renderAll() {
   renderExportView();
   calcularEnTiempoReal();
   renderWaModuloOptions();
+  renderEmailModuloOptions();
   renderTicker();
   renderRepositorio();
   renderReportesPreview();
@@ -85,4 +88,5 @@ export async function renderAll() {
   renderHistorico();
   renderNavOrden();
   renderFuturosClientes();
+  renderPaginaPublica();
 }

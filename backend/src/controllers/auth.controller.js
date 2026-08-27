@@ -37,4 +37,23 @@ module.exports = {
       res.status(400).json({ error: err.message });
     }
   },
+
+  async uploadFoto(req, res) {
+    try {
+      const { id } = req.body;
+      if (!id) return res.status(400).json({ error: 'Falta el id del usuario.' });
+      if (!req.file) return res.status(400).json({ error: 'Selecciona una imagen.' });
+
+      const usuarios = await storage.getCollection('usuarios');
+      const idx = usuarios.findIndex((u) => u.id === id);
+      if (idx === -1) return res.status(404).json({ error: 'Usuario no encontrado.' });
+
+      const fotoUrl = await storage.subirAvatar({ userId: id, buffer: req.file.buffer, tipo: req.file.mimetype });
+      usuarios[idx] = { ...usuarios[idx], fotoUrl };
+      await storage.setCollection('usuarios', usuarios);
+      res.json(sanitize(usuarios[idx]));
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
 };

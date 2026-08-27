@@ -33,6 +33,7 @@ export const api = {
 
   login: (usuario, pass) => request('POST', '/auth/login', { usuario, pass }),
   updateProfile: (id, nombre, pass) => request('PUT', '/auth/profile', { id, nombre, pass }),
+  uploadFoto: (formData) => requestForm('POST', '/auth/profile/foto', formData),
 
   usuarios: {
     list: () => request('GET', '/usuarios'),
@@ -45,6 +46,8 @@ export const api = {
     create: (data) => request('POST', '/productos', data),
     update: (id, data) => request('PUT', `/productos/${id}`, data),
     remove: (id) => request('DELETE', `/productos/${id}`),
+    uploadFoto: (id, formData) => requestForm('POST', `/productos/${id}/foto`, formData),
+    uploadBrochure: (id, formData) => requestForm('POST', `/productos/${id}/brochure`, formData),
   },
 
   ventas: {
@@ -88,4 +91,16 @@ export const api = {
     update: (id, data) => request('PUT', `/enlaces/${id}`, data),
     remove: (id) => request('DELETE', `/enlaces/${id}`),
   },
+
+  email: {
+    send: (data) => request('POST', '/email/enviar', data),
+    bulkSend: (data) => request('POST', '/email/bulk', data),
+  },
+
+  gruposEnvio: {
+    create: (data) => request('POST', '/grupos-envio', data),
+    update: (id, data) => request('PUT', `/grupos-envio/${id}`, data),
+    remove: (id) => request('DELETE', `/grupos-envio/${id}`),
+  },
+
 };

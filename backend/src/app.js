@@ -14,6 +14,10 @@ function createApp() {
 
   app.use('/api', apiRoutes);
 
+  // Página pública (sin login) de diplomados: catálogo compartible por link.
+  app.get('/diplomados', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'publico', 'diplomados.html')));
+  app.get('/diplomados/:id', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'publico', 'diplomados.html')));
+
   app.use(express.static(FRONTEND_DIR));
   app.get('*', (req, res, next) => {
     if (req.path.startsWith('/api')) return next();

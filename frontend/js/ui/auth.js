@@ -4,6 +4,16 @@ import { showToast } from '../toast.js';
 import { updateClockAndGreeting } from './clock.js';
 import { renderAll } from '../render.js';
 
+function updateSidebarAvatar() {
+  const img = document.getElementById('sidebar-avatar');
+  const seal = document.getElementById('sidebar-seal');
+  const fotoUrl = state.usuario ? state.usuario.fotoUrl : null;
+
+  img.src = fotoUrl || '';
+  img.style.display = fotoUrl ? 'inline-block' : 'none';
+  seal.style.display = fotoUrl ? 'none' : 'inline-block';
+}
+
 export function initAuth() {
   document.getElementById('login-btn').addEventListener('click', async () => {
     const u = document.getElementById('login-user-input').value.trim();
@@ -14,6 +24,7 @@ export function initAuth() {
       state.usuario = result.usuario;
       document.getElementById('login-overlay').style.display = 'none';
       updateClockAndGreeting();
+      updateSidebarAvatar();
 
       const estadoResult = await loadState();
       if (!estadoResult.ok) {
@@ -24,6 +35,27 @@ export function initAuth() {
       showToast(`¡Bienvenido/a, ${state.usuario.nombre}!`);
     } catch (err) {
       alert(err.message);
+    }
+  });
+
+  document.getElementById('prof-foto-input').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file || !state.usuario) return;
+
+    const formData = new FormData();
+    formData.append('id', state.usuario.id);
+    formData.append('foto', file);
+
+    try {
+      const actualizado = await api.uploadFoto(formData);
+      state.usuario = { ...state.usuario, ...actualizado };
+      renderPerfil();
+      updateSidebarAvatar();
+      showToast('Foto de perfil actualizada.');
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      e.target.value = '';
     }
   });
 
@@ -42,6 +74,7 @@ export function initAuth() {
       const actualizado = await api.updateProfile(state.usuario.id, u, p);
       state.usuario = { ...state.usuario, ...actualizado };
       updateClockAndGreeting();
+      updateSidebarAvatar();
       showToast('Perfil y clave actualizados correctamente.');
     } catch (err) {
       alert(err.message);
@@ -51,4 +84,9 @@ export function initAuth() {
 
 export function renderPerfil() {
   document.getElementById('prof-user').value = state.usuario ? state.usuario.nombre : '';
+
+  const preview = document.getElementById('prof-foto-preview');
+  const fotoUrl = state.usuario ? state.usuario.fotoUrl : null;
+  preview.src = fotoUrl || '';
+  preview.style.display = fotoUrl ? 'block' : 'none';
 }
