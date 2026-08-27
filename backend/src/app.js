@@ -14,6 +14,12 @@ function createApp() {
 
   app.use('/api', apiRoutes);
 
+  // Si PUBLIC_ROOT=true (usado en el servicio dedicado a la página pública),
+  // la raíz del dominio muestra directo el catálogo, sin pasar por el CRM.
+  if (process.env.PUBLIC_ROOT === 'true') {
+    app.get('/', (req, res) => res.redirect('/diplomados'));
+  }
+
   // Página pública (sin login) de diplomados: catálogo compartible por link.
   app.get('/diplomados', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'publico', 'diplomados.html')));
   app.get('/diplomados/:id', (req, res) => res.sendFile(path.join(FRONTEND_DIR, 'publico', 'diplomados.html')));
