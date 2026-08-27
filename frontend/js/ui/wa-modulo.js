@@ -6,12 +6,16 @@ import { abrirWhatsapp } from '../whatsapp.js';
 
 let modoActual = 'new';
 
+function plantillasWhatsapp() {
+  return state.plantillas.filter((t) => t.canal !== 'email');
+}
+
 function updateWaPreview() {
   const tplId = document.getElementById('wa2-plantilla-select').value;
   const nombre = document.getElementById('wa2-nombre').value.trim() || '[Nombre]';
   const diplomado = document.getElementById('wa2-diplomado').value.trim() || '[Diplomado]';
 
-  const tpl = state.plantillas.find((t) => t.id === tplId);
+  const tpl = plantillasWhatsapp().find((t) => t.id === tplId);
   if (tpl) {
     const txt = tpl.cuerpo.replace(/{nombre}/g, nombre).replace(/{diplomado}/g, diplomado);
     document.getElementById('wa2-preview').value = txt;
@@ -21,14 +25,14 @@ function updateWaPreview() {
 function syncTplModeSelect() {
   const modeSelect = document.getElementById('wa2-tpl-mode-select');
   modeSelect.innerHTML = '<option value="new">➕ Crear Nueva Plantilla</option>' +
-    state.plantillas.map((t) => `<option value="${t.id}">✏️ Editar: ${t.titulo}</option>`).join('');
+    plantillasWhatsapp().map((t) => `<option value="${t.id}">✏️ Editar: ${t.titulo}</option>`).join('');
 
-  modeSelect.value = state.plantillas.some((t) => t.id === modoActual) ? modoActual : 'new';
+  modeSelect.value = plantillasWhatsapp().some((t) => t.id === modoActual) ? modoActual : 'new';
   modoActual = modeSelect.value;
 }
 
 export function renderWaModuloOptions() {
-  document.getElementById('wa2-plantilla-select').innerHTML = state.plantillas.map((t) => `<option value="${t.id}">${t.titulo}</option>`).join('');
+  document.getElementById('wa2-plantilla-select').innerHTML = plantillasWhatsapp().map((t) => `<option value="${t.id}">${t.titulo}</option>`).join('');
   syncTplModeSelect();
   updateWaPreview();
 }
@@ -46,7 +50,7 @@ function aplicarModoEditor() {
     saveBtn.className = 'btn secondary';
     deleteBtn.style.display = 'none';
   } else {
-    const tpl = state.plantillas.find((t) => t.id === modoActual);
+    const tpl = plantillasWhatsapp().find((t) => t.id === modoActual);
     if (tpl) {
       tituloInput.value = tpl.titulo;
       cuerpoInput.value = tpl.cuerpo;
@@ -107,11 +111,11 @@ export function initWaModulo() {
 
     try {
       if (modoActual === 'new') {
-        const nueva = await api.plantillas.create({ titulo, cuerpo });
+        const nueva = await api.plantillas.create({ titulo, cuerpo, canal: 'whatsapp' });
         state.plantillas.push(nueva);
         showToast('Nueva plantilla creada');
       } else {
-        const actualizada = await api.plantillas.update(modoActual, { titulo, cuerpo });
+        const actualizada = await api.plantillas.update(modoActual, { titulo, cuerpo, canal: 'whatsapp' });
         const tpl = state.plantillas.find((t) => t.id === modoActual);
         if (tpl) Object.assign(tpl, actualizada);
         showToast('Plantilla actualizada');

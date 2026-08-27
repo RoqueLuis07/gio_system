@@ -11,6 +11,7 @@ export const state = {
   parametros: { metodosPago: [], cargos: [], moneda: '₲' },
   archivos: [],
   enlaces: [],
+  gruposEnvio: [],
 };
 
 export function applyState(data) {
@@ -22,6 +23,7 @@ export function applyState(data) {
   state.parametros = data.parametros;
   state.archivos = data.archivos || [];
   state.enlaces = data.enlaces || [];
+  state.gruposEnvio = data.gruposEnvio || [];
 }
 
 // Reintenta la carga del estado ante fallas transitorias (ej. errores intermitentes

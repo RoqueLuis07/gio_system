@@ -3,11 +3,16 @@ const { createClient } = require('@supabase/supabase-js');
 // Mapa camelCase (app) <-> snake_case (columnas Postgres) por tabla.
 const TABLES = {
   usuarios: {
-    columns: { id: 'id', nombre: 'nombre', pass: 'pass', rol: 'rol' },
+    columns: { id: 'id', nombre: 'nombre', pass: 'pass', rol: 'rol', fotoUrl: 'foto_url' },
   },
   productos: {
-    columns: { id: 'id', nombre: 'nombre', precio: 'precio', meta: 'meta', valor: 'valor', estado: 'estado' },
-    numeric: ['precio', 'meta', 'valor'],
+    columns: {
+      id: 'id', nombre: 'nombre', precio: 'precio', meta: 'meta', valor: 'valor', estado: 'estado',
+      fotoUrl: 'foto_url', docentes: 'docentes', descripcionPromo: 'descripcion_promo', publicado: 'publicado',
+      perfilIngreso: 'perfil_ingreso', perfilEgreso: 'perfil_egreso', beneficios: 'beneficios',
+      brochurePdfUrl: 'brochure_pdf_url', precioOferta: 'precio_oferta',
+    },
+    numeric: ['precio', 'meta', 'valor', 'precioOferta'],
   },
   ventas: {
     columns: {
@@ -24,10 +29,13 @@ const TABLES = {
     columns: { id: 'id', titulo: 'titulo', fecha: 'fecha', cliente: 'cliente', completado: 'completado', comentario: 'comentario', imagen: 'imagen' },
   },
   plantillas: {
-    columns: { id: 'id', titulo: 'titulo', cuerpo: 'cuerpo' },
+    columns: { id: 'id', titulo: 'titulo', cuerpo: 'cuerpo', canal: 'canal', asunto: 'asunto' },
   },
   enlaces: {
     columns: { id: 'id', titulo: 'titulo', url: 'url' },
+  },
+  grupos_envio: {
+    columns: { id: 'id', nombre: 'nombre', ventaIds: 'venta_ids', emailsManuales: 'emails_manuales' },
   },
 };
 
@@ -140,6 +148,7 @@ async function listArchivos() {
 }
 
 async function insertArchivo({ id, nombre, categoria, tipo, buffer }) {
+  await ensureBucket(ARCHIVOS_BUCKET);
   const supabase = getClient();
   const ruta = `${id}-${nombre}`;
 
@@ -183,8 +192,51 @@ async function removeArchivo(id) {
   return true;
 }
 
+const bucketsListos = new Set();
+
+async function ensureBucket(nombre) {
+  if (bucketsListos.has(nombre)) return;
+  const supabase = getClient();
+
+  const { data: buckets, error } = await supabase.storage.listBuckets();
+  if (error) throw new Error(`Error listando buckets de storage: ${error.message}`);
+
+  const existe = (buckets || []).some((b) => b.name === nombre);
+  if (!existe) {
+    const { error: createError } = await supabase.storage.createBucket(nombre, { public: true });
+    if (createError) throw new Error(`Error creando el bucket ${nombre}: ${createError.message}`);
+  }
+  bucketsListos.add(nombre);
+}
+
+async function subirArchivoPublico(bucket, ruta, buffer, tipo) {
+  await ensureBucket(bucket);
+  const supabase = getClient();
+
+  const { error: uploadError } = await supabase.storage.from(bucket).upload(ruta, buffer, {
+    contentType: tipo || 'application/octet-stream',
+    upsert: true,
+  });
+  if (uploadError) throw new Error(`Error subiendo el archivo: ${uploadError.message}`);
+
+  const { data: urlData } = supabase.storage.from(bucket).getPublicUrl(ruta);
+  return urlData.publicUrl;
+}
+
+async function subirAvatar({ userId, buffer, tipo }) {
+  return subirArchivoPublico('avatars', `${userId}-${Date.now()}`, buffer, tipo);
+}
+
+async function subirFotoDiplomado({ productoId, buffer, tipo }) {
+  return subirArchivoPublico('diplomados', `${productoId}-foto-${Date.now()}`, buffer, tipo);
+}
+
+async function subirBrochureDiplomado({ productoId, buffer, tipo }) {
+  return subirArchivoPublico('diplomados', `${productoId}-brochure-${Date.now()}.pdf`, buffer, tipo);
+}
+
 async function getState() {
-  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces] = await Promise.all([
+  const [usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces, gruposEnvio] = await Promise.all([
     getCollection('usuarios'),
     getCollection('productos'),
     getCollection('ventas'),
@@ -194,8 +246,11 @@ async function getState() {
     getCollection('parametros'),
     listArchivos(),
     getCollection('enlaces'),
+    // La tabla grupos_envio es opcional/nueva: si todavía no se corrió la migración
+    // que la crea, no debe tumbar la carga de todo el resto del estado.
+    getCollection('grupos_envio').catch(() => []),
   ]);
-  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces };
+  return { usuarios, productos, ventas, prospectos, recordatorios, plantillas, parametros, archivos, enlaces, gruposEnvio };
 }
 
-module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, renameArchivo, removeArchivo };
+module.exports = { getState, getCollection, setCollection, listArchivos, insertArchivo, renameArchivo, removeArchivo, subirAvatar, subirFotoDiplomado, subirBrochureDiplomado };
