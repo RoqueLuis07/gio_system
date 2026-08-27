@@ -4,14 +4,11 @@ import { showToast } from '../toast.js';
 import { renderAll } from '../render.js';
 import { primeraPaginaComoImagen } from '../pdf-thumb.js';
 import { fmt, attachMoneyInput, moneyVal } from '../format.js';
+import { linkDiplomadoPublico as linkPublico } from '../public-site.js';
 
 let productoActualId = null;
 let fotoPendiente = null;
 let brochurePendiente = null;
-
-function linkPublico(id) {
-  return `${location.origin}/diplomados/${id}`;
-}
 
 function renderDocentesLista(nombres) {
   const cont = document.getElementById('pub-docentes-lista');
