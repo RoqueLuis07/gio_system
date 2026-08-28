@@ -51,19 +51,16 @@
     document.getElementById('hero-subtitle').textContent = p.banner.subtitulo;
     document.getElementById('hero-cta').textContent = p.banner.textoBoton || 'Ver catálogo';
 
-    var heroWrap = document.getElementById('hero-banner-wrap');
     var heroImg = document.getElementById('hero-banner-img');
     var heroArt = document.getElementById('hero-art');
     if (p.banner.imagenUrl) {
       heroImg.src = p.banner.imagenUrl;
       heroImg.alt = p.empresa.nombre;
-      heroWrap.hidden = false;
+      heroImg.hidden = false;
       heroArt.hidden = true;
-      document.getElementById('hero').classList.add('tiene-banner');
     } else {
-      heroWrap.hidden = true;
+      heroImg.hidden = true;
       heroArt.hidden = false;
-      document.getElementById('hero').classList.remove('tiene-banner');
     }
 
     var waTexto = 'Hola, quiero más información sobre sus productos.';
@@ -82,10 +79,15 @@
     contactoHtml += '<li><a href="' + waLink(p.contacto.whatsapp, waTexto) + '" target="_blank" rel="noopener">💬 Escribinos por WhatsApp</a></li>';
     document.getElementById('footer-contact').innerHTML = contactoHtml;
 
+    var iconosRedes = {
+      facebook: '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M22 12.06C22 6.5 17.52 2 12 2S2 6.5 2 12.06C2 17.08 5.66 21.23 10.44 22v-7.03H7.9v-2.91h2.54V9.85c0-2.5 1.49-3.89 3.77-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.88h2.78l-.44 2.91h-2.34V22C18.34 21.23 22 17.08 22 12.06z"/></svg>',
+      instagram: '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M12 2c2.72 0 3.06.01 4.12.06 1.06.05 1.79.22 2.43.47.66.26 1.21.6 1.76 1.15.55.55.9 1.1 1.15 1.76.25.64.42 1.37.47 2.43.05 1.06.06 1.4.06 4.12s-.01 3.06-.06 4.12c-.05 1.06-.22 1.79-.47 2.43a4.9 4.9 0 01-1.15 1.76c-.55.55-1.1.9-1.76 1.15-.64.25-1.37.42-2.43.47-1.06.05-1.4.06-4.12.06s-3.06-.01-4.12-.06c-1.06-.05-1.79-.22-2.43-.47a4.9 4.9 0 01-1.76-1.15 4.9 4.9 0 01-1.15-1.76c-.25-.64-.42-1.37-.47-2.43C2.01 15.06 2 14.72 2 12s.01-3.06.06-4.12c.05-1.06.22-1.79.47-2.43.26-.66.6-1.21 1.15-1.76a4.9 4.9 0 011.76-1.15c.64-.25 1.37-.42 2.43-.47C8.94 2.01 9.28 2 12 2m0 1.8c-2.67 0-2.99.01-4.04.06-.87.04-1.34.18-1.65.3-.42.16-.71.36-1.02.67-.31.31-.51.6-.67 1.02-.12.31-.26.78-.3 1.65C4.27 8.5 4.26 8.82 4.26 11.49v1.02c0 2.67.01 2.99.06 4.04.04.87.18 1.34.3 1.65.16.42.36.71.67 1.02.31.31.6.51 1.02.67.31.12.78.26 1.65.3 1.05.05 1.37.06 4.04.06s2.99-.01 4.04-.06c.87-.04 1.34-.18 1.65-.3.42-.16.71-.36 1.02-.67.31-.31.51-.6.67-1.02.12-.31.26-.78.3-1.65.05-1.05.06-1.37.06-4.04v-1.02c0-2.67-.01-2.99-.06-4.04-.04-.87-.18-1.34-.3-1.65a2.7 2.7 0 00-.67-1.02 2.7 2.7 0 00-1.02-.67c-.31-.12-.78-.26-1.65-.3C14.99 3.81 14.67 3.8 12 3.8m0 3.05a5.15 5.15 0 110 10.3 5.15 5.15 0 010-10.3m0 1.8a3.35 3.35 0 100 6.7 3.35 3.35 0 000-6.7m5.35-2a1.2 1.2 0 11-2.4 0 1.2 1.2 0 012.4 0"/></svg>',
+      tiktok: '<svg viewBox="0 0 24 24" width="17" height="17" fill="currentColor"><path d="M16.6 2h-3.2v13.9c0 1.6-1.3 2.9-2.9 2.9s-2.9-1.3-2.9-2.9 1.3-2.9 2.9-2.9c.3 0 .6.05.9.13V9.9a6.1 6.1 0 00-.9-.07A6.1 6.1 0 004.4 15.9a6.1 6.1 0 006.1 6.1 6.1 6.1 0 006.1-6.1V8.4a8.3 8.3 0 004.8 1.5V6.7c-1.9 0-3.5-1.1-4.3-2.7-.3-.6-.5-1.3-.5-2z"/></svg>',
+    };
     var socialHtml = '';
-    if (p.redes.facebook) socialHtml += '<a href="' + escapeHtml(p.redes.facebook) + '" target="_blank" rel="noopener" aria-label="Facebook">📘</a>';
-    if (p.redes.instagram) socialHtml += '<a href="' + escapeHtml(p.redes.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">📷</a>';
-    if (p.redes.tiktok) socialHtml += '<a href="' + escapeHtml(p.redes.tiktok) + '" target="_blank" rel="noopener" aria-label="TikTok">🎵</a>';
+    if (p.redes.facebook) socialHtml += '<a href="' + escapeHtml(p.redes.facebook) + '" target="_blank" rel="noopener" aria-label="Facebook">' + iconosRedes.facebook + '</a>';
+    if (p.redes.instagram) socialHtml += '<a href="' + escapeHtml(p.redes.instagram) + '" target="_blank" rel="noopener" aria-label="Instagram">' + iconosRedes.instagram + '</a>';
+    if (p.redes.tiktok) socialHtml += '<a href="' + escapeHtml(p.redes.tiktok) + '" target="_blank" rel="noopener" aria-label="TikTok">' + iconosRedes.tiktok + '</a>';
     document.getElementById('footer-social').innerHTML = socialHtml;
 
     if (p.tema && p.tema.colorPrimario) document.documentElement.style.setProperty('--azul', p.tema.colorPrimario);
@@ -122,7 +124,7 @@
     document.querySelectorAll('[data-cat]').forEach(function (el) {
       el.addEventListener('click', function () {
         var id = el.dataset.cat || null;
-        cerrarSidebar();
+        if (esMobile()) cerrarSidebar();
         if (!id) { mostrarInicio(); return; }
         mostrarListado({ categoriaId: id });
       });
@@ -141,18 +143,28 @@
     });
   }
 
-  // ---------- panel de categorías (sidebar / drawer) ----------
+  // ---------- panel de categorías: plegable en cualquier tamaño de pantalla ----------
+  function esMobile() { return window.innerWidth <= 900; }
+
   function abrirSidebar() {
-    document.getElementById('cat-sidebar').classList.add('open');
-    document.getElementById('cat-sidebar-backdrop').classList.add('open');
+    document.getElementById('cat-sidebar').classList.remove('cerrado');
+    if (esMobile()) document.getElementById('cat-sidebar-backdrop').classList.add('visible');
     document.getElementById('menu-toggle').setAttribute('aria-expanded', 'true');
   }
   function cerrarSidebar() {
-    document.getElementById('cat-sidebar').classList.remove('open');
-    document.getElementById('cat-sidebar-backdrop').classList.remove('open');
+    document.getElementById('cat-sidebar').classList.add('cerrado');
+    document.getElementById('cat-sidebar-backdrop').classList.remove('visible');
     document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
   }
-  document.getElementById('menu-toggle').addEventListener('click', abrirSidebar);
+  function toggleSidebar() {
+    var cerrada = document.getElementById('cat-sidebar').classList.contains('cerrado');
+    if (cerrada) abrirSidebar(); else cerrarSidebar();
+  }
+
+  // Estado inicial: abierto de entrada en desktop, cerrado (cajón) en celular.
+  if (esMobile()) cerrarSidebar(); else abrirSidebar();
+
+  document.getElementById('menu-toggle').addEventListener('click', toggleSidebar);
   document.getElementById('cat-sidebar-close').addEventListener('click', cerrarSidebar);
   document.getElementById('cat-sidebar-backdrop').addEventListener('click', cerrarSidebar);
 
