@@ -1,8 +1,9 @@
 :root{
-  --azul:#0ea5e9; --azul-d:#0284c7; --naranja:#f97316; --naranja-d:#ea580c;
-  --rosa:#ec4899; --violeta:#8b5cf6; --amarillo:#facc15; --verde:#22c55e;
+  /* Paleta de marca: dorado/amarillo de la cartelería real de Jair Comercial */
+  --azul:#f0a800; --azul-d:#c98600; --naranja:#e11d2e; --naranja-d:#b8121f;
+  --rosa:#ec4899; --violeta:#d2691e; --amarillo:#facc15; --verde:#22c55e;
   --tinta:#0f172a; --tinta-suave:#475569; --muted:#64748b;
-  --bg:#f7fafc; --card:#ffffff; --border:#e6ebf2;
+  --bg:#fffbf0; --card:#ffffff; --border:#f0e4c8;
   --radius:20px; --radius-sm:12px;
   --shadow:0 10px 30px -12px rgba(15,23,42,0.16);
   --shadow-lg:0 24px 60px -20px rgba(15,23,42,0.25);
@@ -36,8 +37,8 @@ img{ max-width:100%; display:block; }
   border-bottom:1px solid var(--border);
 }
 .header-inner{ max-width:1240px; margin:0 auto; padding:14px 20px; display:flex; align-items:center; gap:20px; }
-.brand{ display:flex; align-items:center; gap:10px; text-decoration:none; flex-shrink:0; }
-.brand-logo{ width:38px; height:38px; border-radius:10px; object-fit:cover; }
+.brand{ display:flex; align-items:center; gap:11px; text-decoration:none; flex-shrink:0; }
+.brand-logo{ width:46px; height:46px; border-radius:50%; object-fit:cover; box-shadow:0 2px 8px rgba(0,0,0,0.12); }
 .brand-name{
   font-weight:800; font-size:21px; letter-spacing:-0.01em;
   background:linear-gradient(90deg, var(--azul-d), var(--violeta) 45%, var(--naranja));
@@ -86,7 +87,7 @@ img{ max-width:100%; display:block; }
   width:100%; text-align:left;
 }
 .cat-sidebar-item:hover{ background:#f1f5f9; }
-.cat-sidebar-item.active{ background:linear-gradient(90deg, rgba(14,165,233,0.14), rgba(139,92,246,0.1)); color:var(--azul-d); }
+.cat-sidebar-item.active{ background:linear-gradient(90deg, rgba(240,168,0,0.16), rgba(225,29,46,0.08)); color:var(--azul-d); }
 .cat-sidebar-item .ico{ font-size:17px; width:22px; text-align:center; flex-shrink:0; }
 .cat-sidebar-item .count{ margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:700; }
 .cat-sidebar-backdrop{ display:none; }
@@ -102,6 +103,13 @@ img{ max-width:100%; display:block; }
     display:none; position:fixed; inset:0; background:rgba(15,23,42,0.45); z-index:70;
   }
   .cat-sidebar-backdrop.open{ display:block; }
+}
+
+/* En desktop el panel de categorías ya está siempre visible a la izquierda
+   (position:sticky arriba), así que el botón de abrir/cerrar no tiene nada
+   que hacer ahí — solo sirve como cajón deslizante en pantallas angostas. */
+@media (min-width:901px){
+  .menu-toggle{ display:none; }
 }
 
 /* ---------- hero ---------- */
@@ -139,6 +147,17 @@ img{ max-width:100%; display:block; }
 
 @media (min-width:860px){
   .hero{ grid-template-columns:1.1fr 0.9fr; padding-top:74px; }
+  .hero.tiene-banner{ grid-template-columns:1fr; padding-bottom:8px; }
+}
+
+/* ---------- portada horizontal (foto real del local) ---------- */
+.hero-banner-wrap{ max-width:1240px; margin:6px auto 0; padding:0 20px 10px; position:relative; z-index:2; }
+.hero-banner-wrap img{
+  width:100%; aspect-ratio:21/9; object-fit:cover; border-radius:24px; box-shadow:var(--shadow-lg);
+  border:1px solid var(--border);
+}
+@media (max-width:700px){
+  .hero-banner-wrap img{ aspect-ratio:16/11; border-radius:18px; }
 }
 
 /* ---------- buscador ---------- */

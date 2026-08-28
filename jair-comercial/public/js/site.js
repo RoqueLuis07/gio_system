@@ -51,6 +51,21 @@
     document.getElementById('hero-subtitle').textContent = p.banner.subtitulo;
     document.getElementById('hero-cta').textContent = p.banner.textoBoton || 'Ver catálogo';
 
+    var heroWrap = document.getElementById('hero-banner-wrap');
+    var heroImg = document.getElementById('hero-banner-img');
+    var heroArt = document.getElementById('hero-art');
+    if (p.banner.imagenUrl) {
+      heroImg.src = p.banner.imagenUrl;
+      heroImg.alt = p.empresa.nombre;
+      heroWrap.hidden = false;
+      heroArt.hidden = true;
+      document.getElementById('hero').classList.add('tiene-banner');
+    } else {
+      heroWrap.hidden = true;
+      heroArt.hidden = false;
+      document.getElementById('hero').classList.remove('tiene-banner');
+    }
+
     var waTexto = 'Hola, quiero más información sobre sus productos.';
     var headerWa = document.getElementById('header-wa');
     headerWa.href = waLink(p.contacto.whatsapp, waTexto);

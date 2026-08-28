@@ -75,6 +75,16 @@ Views.parametros = (function () {
             <label>Texto del botón principal
               <input id="f-banner-boton" type="text" value="${escapeAttr(p.banner.textoBoton)}" />
             </label>
+            <div class="span-2">
+              <span class="field-label">Foto de portada (horizontal, se muestra debajo del título)</span>
+              <div class="logo-upload">
+                <div class="logo-preview" id="banner-preview" style="width:110px;height:64px;border-radius:12px;">${bannerUrl ? `<img src="${bannerUrl}" alt="" style="border-radius:12px;" />` : '🖼️'}</div>
+                <input id="f-banner-input" type="file" accept="image/*" hidden />
+                <button type="button" class="btn btn-ghost btn-sm" id="btn-subir-banner">Cambiar foto</button>
+                ${bannerUrl ? '<button type="button" class="btn btn-ghost btn-sm" id="btn-quitar-banner">Quitar</button>' : ''}
+              </div>
+              <p class="muted" style="margin:8px 0 0;">Si no cargás una, se muestra el diseño ilustrado por defecto.</p>
+            </div>
           </div>
         </section>
 
@@ -146,6 +156,30 @@ Views.parametros = (function () {
         Toast.error(err.message);
       }
     });
+
+    document.getElementById('btn-subir-banner').addEventListener('click', () => document.getElementById('f-banner-input').click());
+    document.getElementById('f-banner-input').addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const fd = new FormData();
+      fd.append('archivo', file);
+      try {
+        const { url } = await Api.upload('/upload', fd);
+        bannerUrl = url;
+        document.getElementById('banner-preview').innerHTML = `<img src="${url}" alt="" style="border-radius:12px;" />`;
+        Toast.ok('Foto de portada subida. No olvides guardar los cambios.');
+      } catch (err) {
+        Toast.error(err.message);
+      }
+    });
+    const btnQuitarBanner = document.getElementById('btn-quitar-banner');
+    if (btnQuitarBanner) {
+      btnQuitarBanner.addEventListener('click', () => {
+        bannerUrl = null;
+        document.getElementById('banner-preview').innerHTML = '🖼️';
+        Toast.ok('Foto quitada. Guardá los cambios para confirmar.');
+      });
+    }
 
     pintarMetodos();
     document.getElementById('btn-agregar-metodo').addEventListener('click', agregarMetodo);
