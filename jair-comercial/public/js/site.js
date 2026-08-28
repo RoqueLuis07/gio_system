@@ -277,8 +277,20 @@
   var resizeDebounce = null;
   window.addEventListener('resize', function () {
     clearTimeout(resizeDebounce);
-    resizeDebounce = setTimeout(actualizarTodasLasFlechas, 150);
+    resizeDebounce = setTimeout(function () {
+      actualizarTodasLasFlechas();
+      actualizarAlturaHeader();
+    }, 150);
   });
+
+  // El panel de categorías (sticky) necesita saber la altura real del header
+  // para no quedar tapado ni superpuesto — el header puede cambiar de alto
+  // (por ejemplo cuando aparece el logo, o entre mobile y desktop).
+  function actualizarAlturaHeader() {
+    var header = document.getElementById('site-header');
+    if (!header) return;
+    document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px');
+  }
 
   // ---------- vista de inicio: filas horizontales por categoría ----------
   function renderInicio() {
@@ -628,10 +640,14 @@
     renderCategorias();
     renderInicio();
     aplicarRutaActual();
+    actualizarAlturaHeader();
+    setTimeout(actualizarAlturaHeader, 300); // por si el logo/la tipografía tardan en cargar y cambian el alto
 
     var hash = location.hash.replace('#producto-', '');
     if (hash) abrirModal(hash);
   }
+
+  window.addEventListener('load', actualizarAlturaHeader);
 
   fetch('/api/publico/catalogo')
     .then(function (res) { return res.json(); })
