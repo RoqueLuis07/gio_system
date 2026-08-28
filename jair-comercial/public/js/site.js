@@ -106,6 +106,8 @@
     var itemTodo = '<button class="cat-sidebar-item active" data-cat="">' +
       '<span class="ico">🏠</span><span>Todo el catálogo</span></button>';
 
+    var etiqueta = '<div class="cat-sidebar-label">🗂️ Categorías</div>';
+
     var items = state.categorias
       .slice()
       .sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
@@ -115,7 +117,7 @@
           '<span class="count">' + conteoProductos(c.id) + '</span></button>';
       });
 
-    document.getElementById('cat-sidebar-nav').innerHTML = itemTodo + items.join('');
+    document.getElementById('cat-sidebar-nav').innerHTML = itemTodo + etiqueta + items.join('');
 
     document.getElementById('footer-cats').innerHTML = state.categorias
       .map(function (c) { return '<li><a href="/c/' + c.slug + '" data-cat-link="' + c.id + '">' + c.icono + ' ' + escapeHtml(c.nombre) + '</a></li>'; })
