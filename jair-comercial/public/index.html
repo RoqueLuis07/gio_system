@@ -20,16 +20,10 @@
 
 <header id="site-header" class="site-header">
   <div class="header-inner">
-    <div class="brand-group">
-      <a href="/" class="brand" id="brand-link">
-        <img id="brand-logo" class="brand-logo" alt="" hidden />
-        <span id="brand-name" class="brand-name">Jair Comercial</span>
-      </a>
-      <button id="menu-toggle" class="menu-toggle" aria-label="Abrir categorías" aria-expanded="false">
-        <span class="menu-toggle-bars"><span></span><span></span><span></span></span>
-        <span class="menu-toggle-label">Categorías</span>
-      </button>
-    </div>
+    <a href="/" class="brand" id="brand-link">
+      <img id="brand-logo" class="brand-logo" alt="" hidden />
+      <span id="brand-name" class="brand-name">Jair Comercial</span>
+    </a>
     <div class="header-search">
       <svg viewBox="0 0 24 24" width="17" height="17"><path fill="currentColor" d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.7.7l.27.28v.79l5 5L20.49 19zm-6 0A4.5 4.5 0 1 1 14 9.5 4.5 4.5 0 0 1 9.5 14"/></svg>
       <input id="search-input" type="search" placeholder="Buscar productos..." autocomplete="off" />
@@ -43,12 +37,15 @@
 
 <div class="layout">
   <aside id="cat-sidebar" class="cat-sidebar">
-    <div class="cat-sidebar-head">
-      <button id="cat-sidebar-close" class="cat-sidebar-close" aria-label="Cerrar categorías">✕</button>
+    <button id="cat-toggle-bar" class="cat-toggle-bar" aria-expanded="true">
+      <span class="menu-toggle-bars"><span></span><span></span><span></span></span>
+      <span>Categorías</span>
+      <span class="cat-toggle-chevron" aria-hidden="true">▾</span>
+    </button>
+    <div id="cat-sidebar-list" class="cat-sidebar-list">
+      <nav id="cat-sidebar-nav" class="cat-sidebar-nav"></nav>
     </div>
-    <nav id="cat-sidebar-nav" class="cat-sidebar-nav"></nav>
   </aside>
-  <div id="cat-sidebar-backdrop" class="cat-sidebar-backdrop"></div>
 
   <div class="layout-main">
 <main id="main">

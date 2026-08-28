@@ -106,8 +106,6 @@
     var itemTodo = '<button class="cat-sidebar-item active" data-cat="">' +
       '<span class="ico">🏠</span><span>Todo el catálogo</span></button>';
 
-    var etiqueta = '<div class="cat-sidebar-label">🗂️ Categorías</div>';
-
     var items = state.categorias
       .slice()
       .sort(function (a, b) { return (a.orden || 0) - (b.orden || 0); })
@@ -117,7 +115,7 @@
           '<span class="count">' + conteoProductos(c.id) + '</span></button>';
       });
 
-    document.getElementById('cat-sidebar-nav').innerHTML = itemTodo + etiqueta + items.join('');
+    document.getElementById('cat-sidebar-nav').innerHTML = itemTodo + items.join('');
 
     document.getElementById('footer-cats').innerHTML = state.categorias
       .map(function (c) { return '<li><a href="/c/' + c.slug + '" data-cat-link="' + c.id + '">' + c.icono + ' ' + escapeHtml(c.nombre) + '</a></li>'; })
@@ -145,30 +143,26 @@
     });
   }
 
-  // ---------- panel de categorías: plegable en cualquier tamaño de pantalla ----------
+  // ---------- panel de categorías: acordeón "Categorías" plegable ----------
   function esMobile() { return window.innerWidth <= 900; }
 
   function abrirSidebar() {
-    document.getElementById('cat-sidebar').classList.remove('cerrado');
-    if (esMobile()) document.getElementById('cat-sidebar-backdrop').classList.add('visible');
-    document.getElementById('menu-toggle').setAttribute('aria-expanded', 'true');
+    document.getElementById('cat-sidebar-list').classList.remove('cerrado');
+    document.getElementById('cat-toggle-bar').setAttribute('aria-expanded', 'true');
   }
   function cerrarSidebar() {
-    document.getElementById('cat-sidebar').classList.add('cerrado');
-    document.getElementById('cat-sidebar-backdrop').classList.remove('visible');
-    document.getElementById('menu-toggle').setAttribute('aria-expanded', 'false');
+    document.getElementById('cat-sidebar-list').classList.add('cerrado');
+    document.getElementById('cat-toggle-bar').setAttribute('aria-expanded', 'false');
   }
   function toggleSidebar() {
-    var cerrada = document.getElementById('cat-sidebar').classList.contains('cerrado');
+    var cerrada = document.getElementById('cat-sidebar-list').classList.contains('cerrado');
     if (cerrada) abrirSidebar(); else cerrarSidebar();
   }
 
-  // Estado inicial: abierto de entrada en desktop, cerrado (cajón) en celular.
+  // Estado inicial: abierto de entrada en desktop, cerrado en celular (para no tapar el resto).
   if (esMobile()) cerrarSidebar(); else abrirSidebar();
 
-  document.getElementById('menu-toggle').addEventListener('click', toggleSidebar);
-  document.getElementById('cat-sidebar-close').addEventListener('click', cerrarSidebar);
-  document.getElementById('cat-sidebar-backdrop').addEventListener('click', cerrarSidebar);
+  document.getElementById('cat-toggle-bar').addEventListener('click', toggleSidebar);
 
   // ---------- tarjetas de producto ----------
   function sinStock(p) { return p.stock !== null && p.stock !== undefined && p.stock <= 0; }
