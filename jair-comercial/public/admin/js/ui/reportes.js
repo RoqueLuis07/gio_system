@@ -85,17 +85,19 @@ Views.reportes = (function () {
       (!productoId || v.productoId === productoId)
     );
     const aprobadas = filtradas.filter((v) => v.estado === 'aprobada');
-    const pendientes = filtradas.filter((v) => v.estado === 'pendiente');
+    const pendientes = filtradas.filter((v) => ['pendiente', 'delivery_asignado', 'entregada'].includes(v.estado));
 
     const totalVendido = aprobadas.reduce((s, v) => s + v.total, 0);
     const totalGanancia = aprobadas.reduce((s, v) => s + v.comisionMonto, 0);
+    const gananciaSinPagar = aprobadas.filter((v) => !v.comisionPagada).reduce((s, v) => s + v.comisionMonto, 0);
 
     document.getElementById('rep-resumen').innerHTML = `
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-icon">🧾</div><div><div class="stat-num">${aprobadas.length}</div><div class="stat-label">Ventas aprobadas</div></div></div>
         <div class="stat-card"><div class="stat-icon">💰</div><div><div class="stat-num">${fmtGs(totalVendido)}</div><div class="stat-label">Total vendido</div></div></div>
         <div class="stat-card"><div class="stat-icon">🤝</div><div><div class="stat-num">${fmtGs(totalGanancia)}</div><div class="stat-label">Ganancia de vendedores</div></div></div>
-        <div class="stat-card"><div class="stat-icon">🕐</div><div><div class="stat-num">${pendientes.length}</div><div class="stat-label">Pendientes de aprobar</div></div></div>
+        <div class="stat-card"><div class="stat-icon">💸</div><div><div class="stat-num">${fmtGs(gananciaSinPagar)}</div><div class="stat-label">Comisión sin pagar aún</div></div></div>
+        <div class="stat-card"><div class="stat-icon">🕐</div><div><div class="stat-num">${pendientes.length}</div><div class="stat-label">En proceso (sin cerrar)</div></div></div>
       </div>
     `;
 

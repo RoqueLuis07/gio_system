@@ -15,6 +15,8 @@ Views.ventas = (function () {
       <div class="view-toolbar">
         <div class="tabs-filtro" id="ventas-tabs">
           <button class="tab-btn" data-estado="pendiente">🕐 Pendientes</button>
+          <button class="tab-btn" data-estado="delivery_asignado">🚚 Delivery asignado</button>
+          <button class="tab-btn" data-estado="entregada">📬 Entregadas</button>
           <button class="tab-btn" data-estado="aprobada">✅ Aprobadas</button>
           <button class="tab-btn" data-estado="rechazada">✕ Rechazadas</button>
           <button class="tab-btn" data-estado="">Todas</button>
@@ -41,7 +43,7 @@ Views.ventas = (function () {
   }
 
   async function actualizarBadge() {
-    const pendientes = ventas.filter((v) => v.estado === 'pendiente').length;
+    const pendientes = ventas.filter((v) => ['pendiente', 'delivery_asignado', 'entregada'].includes(v.estado)).length;
     const badge = document.getElementById('badge-ventas-pendientes');
     if (!badge) return;
     badge.textContent = pendientes;
@@ -67,6 +69,8 @@ Views.ventas = (function () {
     el.querySelectorAll('[data-rechazar]').forEach((b) => b.addEventListener('click', () => rechazar(b.dataset.rechazar)));
     el.querySelectorAll('[data-eliminar]').forEach((b) => b.addEventListener('click', () => eliminar(b.dataset.eliminar)));
     el.querySelectorAll('[data-delivery]').forEach((b) => b.addEventListener('click', () => abrirDelivery(b.dataset.delivery)));
+    el.querySelectorAll('[data-entregar]').forEach((b) => b.addEventListener('click', () => marcarEntregado(b.dataset.entregar)));
+    el.querySelectorAll('[data-comision]').forEach((b) => b.addEventListener('click', () => toggleComisionPagada(b.dataset.comision)));
   }
 
   function abrirDelivery(id) {
@@ -104,12 +108,15 @@ Views.ventas = (function () {
 
   function badgeEstado(v) {
     if (v.estado === 'pendiente') return '<span class="badge badge-gold">Pendiente</span>';
-    if (v.estado === 'aprobada') return '<span class="badge badge-green">Aprobada</span>';
+    if (v.estado === 'delivery_asignado') return '<span class="badge badge-gold">🚚 Delivery asignado</span>';
+    if (v.estado === 'entregada') return '<span class="badge badge-gold">📬 Entregada</span>';
+    if (v.estado === 'aprobada') return '<span class="badge badge-green">✅ Aprobada</span>';
     return '<span class="badge badge-gray">Rechazada</span>';
   }
 
   function rowHtml(v) {
     const cliente = v.cliente || {};
+    const tieneDelivery = ['delivery_asignado', 'entregada', 'aprobada'].includes(v.estado);
     return `
       <div class="prod-row venta-row">
         <div class="prod-row-info">
@@ -123,16 +130,24 @@ Views.ventas = (function () {
           <div class="prod-row-meta">
             📦 ${escapeHtml(cliente.nombre || '—')} · 📞 ${escapeHtml(cliente.telefono || '—')}${cliente.ciudad ? ' · 🏙️ ' + escapeHtml(cliente.ciudad) : ''}${cliente.direccion ? ' · ' + escapeHtml(cliente.direccion) : ''}
           </div>
-          ${v.estado === 'aprobada' ? `<div class="prod-row-meta">${v.delivery && v.delivery.nombre ? '🚚 Delivery: <strong>' + escapeHtml(v.delivery.nombre) + '</strong>' : '<span style="color:#b45309">🚚 Sin delivery asignado</span>'}</div>` : ''}
+          ${tieneDelivery ? `<div class="prod-row-meta">${v.delivery && v.delivery.nombre ? '🚚 Delivery: <strong>' + escapeHtml(v.delivery.nombre) + '</strong>' : '<span style="color:#b45309">🚚 Sin delivery asignado</span>'}</div>` : ''}
+          ${v.estado === 'aprobada' ? `<div class="prod-row-meta">${v.comisionPagada ? '💰 Comisión pagada al vendedor' : '<span style="color:#b45309">💰 Comisión aún no pagada al vendedor</span>'}</div>` : ''}
           ${v.motivoRechazo ? `<div class="prod-row-meta">Motivo: ${escapeHtml(v.motivoRechazo)}</div>` : ''}
         </div>
         <div class="prod-row-badges">${badgeEstado(v)}</div>
         <div class="prod-row-actions">
           ${v.estado === 'pendiente' ? `
-            <button class="btn btn-primary btn-sm" data-aprobar="${v.id}">✓ Aprobar</button>
+            <button class="btn btn-primary btn-sm" data-delivery="${v.id}">🚚 Asignar delivery</button>
             <button class="btn btn-ghost btn-sm" data-rechazar="${v.id}">✕ Rechazar</button>
+          ` : v.estado === 'delivery_asignado' ? `
+            <button class="btn btn-primary btn-sm" data-entregar="${v.id}">📬 Marcar entregado</button>
+            <button class="btn btn-ghost btn-sm" data-delivery="${v.id}">🚚 Cambiar delivery</button>
+            <button class="btn btn-ghost btn-sm" data-rechazar="${v.id}">✕ Rechazar</button>
+          ` : v.estado === 'entregada' ? `
+            <button class="btn btn-primary btn-sm" data-aprobar="${v.id}">✓ Confirmar pago y aprobar</button>
+            <button class="btn btn-ghost btn-sm" data-delivery="${v.id}">🚚 Cambiar delivery</button>
           ` : v.estado === 'aprobada' ? `
-            <button class="btn btn-ghost btn-sm" data-delivery="${v.id}">🚚 ${v.delivery && v.delivery.nombre ? 'Cambiar delivery' : 'Asignar delivery'}</button>
+            <button class="btn btn-ghost btn-sm" data-comision="${v.id}">${v.comisionPagada ? '↩️ Deshacer pago de comisión' : '💰 Marcar comisión pagada'}</button>
             <button class="icon-btn icon-btn-danger" data-eliminar="${v.id}" title="Eliminar registro">🗑️</button>
           ` : `<button class="icon-btn icon-btn-danger" data-eliminar="${v.id}" title="Eliminar registro">🗑️</button>`}
         </div>
@@ -140,13 +155,37 @@ Views.ventas = (function () {
     `;
   }
 
+  async function marcarEntregado(id) {
+    if (!confirm('¿Confirmás que el cliente ya recibió el pedido?')) return;
+    try {
+      const act = await Api.put('/ventas/' + id + '/entregar');
+      Object.assign(ventas.find((v) => v.id === id), act);
+      pintar();
+      Toast.ok('Venta marcada como entregada. Ahora podés confirmar el pago para aprobarla.');
+    } catch (err) {
+      Toast.error(err.message);
+    }
+  }
+
   async function aprobar(id) {
+    if (!confirm('¿Confirmás que el pago del cliente ya se cobró? Esto va a descontar el stock y cerrar la venta.')) return;
     try {
       const act = await Api.put('/ventas/' + id + '/aprobar');
       Object.assign(ventas.find((v) => v.id === id), act);
       await actualizarBadge();
       pintar();
       Toast.ok('Venta aprobada. Se descontó del stock.');
+    } catch (err) {
+      Toast.error(err.message);
+    }
+  }
+
+  async function toggleComisionPagada(id) {
+    try {
+      const act = await Api.put('/ventas/' + id + '/comision-pagada');
+      Object.assign(ventas.find((v) => v.id === id), act);
+      pintar();
+      Toast.ok(act.comisionPagada ? 'Comisión marcada como pagada.' : 'Comisión marcada como no pagada.');
     } catch (err) {
       Toast.error(err.message);
     }
@@ -179,5 +218,13 @@ Views.ventas = (function () {
 
   function escapeHtml(str) { return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
-  return { render, actualizarBadgeSilencioso: async () => { ventas = await Api.get('/ventas?estado=pendiente'); await actualizarBadge(); } };
+  return {
+    render,
+    actualizarBadgeSilencioso: async () => {
+      const todas = await Api.get('/ventas');
+      const badge = document.getElementById('badge-ventas-pendientes');
+      const pendientes = todas.filter((v) => ['pendiente', 'delivery_asignado', 'entregada'].includes(v.estado)).length;
+      if (badge) { badge.textContent = pendientes; badge.hidden = pendientes === 0; }
+    },
+  };
 })();

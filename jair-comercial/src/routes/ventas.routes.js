@@ -12,6 +12,8 @@ router.post('/', controller.create);
 router.put('/:id/aprobar', controller.aprobar);
 router.put('/:id/rechazar', controller.rechazar);
 router.put('/:id/delivery', controller.asignarDelivery);
+router.put('/:id/entregar', controller.marcarEntregado);
+router.put('/:id/comision-pagada', controller.marcarComisionPagada);
 router.delete('/:id', controller.remove);
 
 module.exports = router;

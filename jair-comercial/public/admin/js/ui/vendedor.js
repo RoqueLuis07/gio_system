@@ -7,8 +7,10 @@ window.Views = window.Views || {};
   function escapeAttr(str) { return escapeHtml(str).replace(/"/g, '&quot;'); }
 
   function badgeEstado(v) {
-    if (v.estado === 'pendiente') return '<span class="badge badge-gold">Pendiente de aprobación</span>';
-    if (v.estado === 'aprobada') return '<span class="badge badge-green">Aprobada</span>';
+    if (v.estado === 'pendiente') return '<span class="badge badge-gold">Pendiente de revisión</span>';
+    if (v.estado === 'delivery_asignado') return '<span class="badge badge-gold">🚚 En camino</span>';
+    if (v.estado === 'entregada') return '<span class="badge badge-gold">📬 Entregada, cerrando venta</span>';
+    if (v.estado === 'aprobada') return '<span class="badge badge-green">✅ Aprobada' + (v.comisionPagada ? ' · 💰 comisión pagada' : '') + '</span>';
     return '<span class="badge badge-gray">Rechazada</span>';
   }
 
@@ -25,7 +27,7 @@ window.Views = window.Views || {};
         return f.getFullYear() === ahora.getFullYear() && f.getMonth() === ahora.getMonth();
       });
       const aprobadasMes = esteMes.filter((v) => v.estado === 'aprobada');
-      const pendientes = ventas.filter((v) => v.estado === 'pendiente');
+      const pendientes = ventas.filter((v) => ['pendiente', 'delivery_asignado', 'entregada'].includes(v.estado));
       const totalVendidoMes = aprobadasMes.reduce((s, v) => s + v.total, 0);
       const gananciaMes = aprobadasMes.reduce((s, v) => s + v.comisionMonto, 0);
 
@@ -40,7 +42,7 @@ window.Views = window.Views || {};
           <div class="stat-card"><div class="stat-icon">🧾</div><div><div class="stat-num">${aprobadasMes.length}</div><div class="stat-label">Ventas aprobadas este mes</div></div></div>
           <div class="stat-card"><div class="stat-icon">💰</div><div><div class="stat-num">${fmtGs(totalVendidoMes)}</div><div class="stat-label">Vendido este mes</div></div></div>
           <div class="stat-card"><div class="stat-icon">🤝</div><div><div class="stat-num">${fmtGs(gananciaMes)}</div><div class="stat-label">Tu ganancia este mes</div></div></div>
-          <div class="stat-card"><div class="stat-icon">🕐</div><div><div class="stat-num">${pendientes.length}</div><div class="stat-label">Pendientes de aprobación</div></div></div>
+          <div class="stat-card"><div class="stat-icon">🕐</div><div><div class="stat-num">${pendientes.length}</div><div class="stat-label">En proceso (sin cerrar)</div></div></div>
         </div>
         <div class="quick-actions">
           <button class="btn btn-primary" data-go="vendedor-nueva-venta">➕ Cargar nueva venta</button>
@@ -194,7 +196,7 @@ window.Views = window.Views || {};
                 <div class="prod-row-title">${escapeHtml(v.productoNombre)} <span class="muted">× ${v.cantidad}</span></div>
                 <div class="prod-row-meta">💳 ${escapeHtml(v.formaPago)} · 🚚 ${escapeHtml((v.cliente && v.cliente.ciudad) || 'sin ciudad')} · 🕐 ${fmtFecha(v.creadoEn)}</div>
                 <div class="prod-row-meta">Total: <strong>${fmtGs(v.total)}</strong> · Tu ganancia: <strong>${fmtGs(v.comisionMonto)}</strong></div>
-                ${v.estado === 'aprobada' ? `<div class="prod-row-meta">${v.delivery && v.delivery.nombre ? '🚚 Delivery asignado: ' + escapeHtml(v.delivery.nombre) : '🚚 Delivery: a coordinar por el admin'}</div>` : ''}
+                ${['delivery_asignado', 'entregada', 'aprobada'].includes(v.estado) ? `<div class="prod-row-meta">${v.delivery && v.delivery.nombre ? '🚚 Delivery: ' + escapeHtml(v.delivery.nombre) : '🚚 Delivery: a coordinar por el admin'}</div>` : ''}
                 ${v.motivoRechazo ? `<div class="prod-row-meta">Motivo del rechazo: ${escapeHtml(v.motivoRechazo)}</div>` : ''}
               </div>
               <div class="prod-row-badges">${badgeEstado(v)}</div>

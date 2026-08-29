@@ -81,8 +81,13 @@ module.exports = {
         motivoRechazo: null,
         creadoEn: ahora,
         actualizadoEn: ahora,
+        entregadoEn: null,
+        entregadoPor: null,
         aprobadoEn: null,
         aprobadoPor: null,
+        comisionPagada: false,
+        comisionPagadaEn: null,
+        comisionPagadaPor: null,
       };
 
       const ventas = await storage.getCollection('ventas');
@@ -112,10 +117,39 @@ module.exports = {
       const ventas = await storage.getCollection('ventas');
       const idx = ventas.findIndex((v) => v.id === req.params.id);
       if (idx === -1) return res.status(404).json({ error: 'Venta no encontrada.' });
+      if (!['pendiente', 'delivery_asignado'].includes(ventas[idx].estado)) {
+        return res.status(400).json({ error: 'Esta venta ya está entregada o cerrada; no se puede cambiar el delivery.' });
+      }
 
       ventas[idx] = {
         ...ventas[idx],
         delivery: { nombre, asignadoPor: req.usuario.nombre, asignadoEn: new Date().toISOString() },
+        estado: 'delivery_asignado',
+        actualizadoEn: new Date().toISOString(),
+      };
+      await storage.setCollection('ventas', ventas);
+      res.json(ventas[idx]);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
+  async marcarEntregado(req, res) {
+    try {
+      if (!esGestor(req.usuario)) return res.status(403).json({ error: 'No tenés permiso para marcar entregas.' });
+
+      const ventas = await storage.getCollection('ventas');
+      const idx = ventas.findIndex((v) => v.id === req.params.id);
+      if (idx === -1) return res.status(404).json({ error: 'Venta no encontrada.' });
+      if (ventas[idx].estado !== 'delivery_asignado') {
+        return res.status(400).json({ error: 'Primero tenés que asignar el delivery.' });
+      }
+
+      ventas[idx] = {
+        ...ventas[idx],
+        estado: 'entregada',
+        entregadoEn: new Date().toISOString(),
+        entregadoPor: req.usuario.nombre,
         actualizadoEn: new Date().toISOString(),
       };
       await storage.setCollection('ventas', ventas);
@@ -132,7 +166,9 @@ module.exports = {
       const ventas = await storage.getCollection('ventas');
       const idx = ventas.findIndex((v) => v.id === req.params.id);
       if (idx === -1) return res.status(404).json({ error: 'Venta no encontrada.' });
-      if (ventas[idx].estado !== 'pendiente') return res.status(400).json({ error: 'Esta venta ya fue procesada.' });
+      if (ventas[idx].estado !== 'entregada') {
+        return res.status(400).json({ error: 'Para aprobar la venta primero tenés que asignar el delivery y marcarla como entregada.' });
+      }
 
       const productos = await storage.getCollection('productos');
       const pIdx = productos.findIndex((p) => p.id === ventas[idx].productoId);
@@ -158,6 +194,32 @@ module.exports = {
     }
   },
 
+  async marcarComisionPagada(req, res) {
+    try {
+      if (!esGestor(req.usuario)) return res.status(403).json({ error: 'No tenés permiso para marcar comisiones como pagadas.' });
+
+      const ventas = await storage.getCollection('ventas');
+      const idx = ventas.findIndex((v) => v.id === req.params.id);
+      if (idx === -1) return res.status(404).json({ error: 'Venta no encontrada.' });
+      if (ventas[idx].estado !== 'aprobada') {
+        return res.status(400).json({ error: 'Solo se puede marcar el pago de comisión en ventas aprobadas.' });
+      }
+
+      const pagada = !ventas[idx].comisionPagada;
+      ventas[idx] = {
+        ...ventas[idx],
+        comisionPagada: pagada,
+        comisionPagadaEn: pagada ? new Date().toISOString() : null,
+        comisionPagadaPor: pagada ? req.usuario.nombre : null,
+        actualizadoEn: new Date().toISOString(),
+      };
+      await storage.setCollection('ventas', ventas);
+      res.json(ventas[idx]);
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  },
+
   async rechazar(req, res) {
     try {
       if (!esGestor(req.usuario)) return res.status(403).json({ error: 'No tenés permiso para rechazar ventas.' });
@@ -165,7 +227,9 @@ module.exports = {
       const ventas = await storage.getCollection('ventas');
       const idx = ventas.findIndex((v) => v.id === req.params.id);
       if (idx === -1) return res.status(404).json({ error: 'Venta no encontrada.' });
-      if (ventas[idx].estado !== 'pendiente') return res.status(400).json({ error: 'Esta venta ya fue procesada.' });
+      if (!['pendiente', 'delivery_asignado'].includes(ventas[idx].estado)) {
+        return res.status(400).json({ error: 'Esta venta ya fue entregada o procesada; no se puede rechazar.' });
+      }
 
       ventas[idx] = {
         ...ventas[idx],
