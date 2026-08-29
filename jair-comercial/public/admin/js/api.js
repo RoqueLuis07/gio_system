@@ -16,17 +16,17 @@ const Api = (function () {
       body: body ? (isForm ? body : JSON.stringify(body)) : undefined,
     });
 
-    if (res.status === 401) {
+    if (res.status === 204) return null;
+
+    let data = null;
+    try { data = await res.json(); } catch { /* respuesta sin cuerpo */ }
+
+    if (res.status === 401 && path !== '/auth/login') {
       localStorage.removeItem('jc_token');
       localStorage.removeItem('jc_usuario');
       if (window.App && window.App.mostrarLogin) window.App.mostrarLogin('Tu sesión expiró. Iniciá sesión de nuevo.');
       throw new Error('Sesión expirada.');
     }
-
-    if (res.status === 204) return null;
-
-    let data = null;
-    try { data = await res.json(); } catch { /* respuesta sin cuerpo */ }
 
     if (!res.ok) throw new Error((data && data.error) || 'Ocurrió un error inesperado.');
     return data;
