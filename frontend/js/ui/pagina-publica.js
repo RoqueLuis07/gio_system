@@ -3,14 +3,11 @@ import { state } from '../state.js';
 import { showToast } from '../toast.js';
 import { renderAll } from '../render.js';
 import { fmt } from '../format.js';
-
-function linkPublico(id) {
-  return `${location.origin}/diplomados/${id}`;
-}
+import { linkDiplomadoPublico } from '../public-site.js';
 
 export function initPaginaPublica() {
   document.getElementById('pp-ver-catalogo-btn').addEventListener('click', () => {
-    window.open(`${location.origin}/diplomados`, '_blank');
+    window.open(linkDiplomadoPublico(), '_blank');
   });
 
   document.getElementById('pp-tabla').addEventListener('click', async (e) => {
@@ -24,7 +21,7 @@ export function initPaginaPublica() {
     }
 
     if (previewBtn) {
-      window.open(linkPublico(previewBtn.dataset.preview), '_blank');
+      window.open(linkDiplomadoPublico(previewBtn.dataset.preview), '_blank');
       return;
     }
 

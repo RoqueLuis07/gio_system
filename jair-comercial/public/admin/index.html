@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Panel de administración — Jair Comercial</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚙️</text></svg>" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/admin/css/admin.css" />
+</head>
+<body>
+
+<!-- ---------- Pantalla de login ---------- -->
+<div id="login-screen" class="login-screen">
+  <form id="login-form" class="login-card">
+    <div class="login-logo">🛠️</div>
+    <h1>Jair Comercial</h1>
+    <p class="login-sub">Panel de administración</p>
+    <label>Usuario
+      <input id="login-usuario" type="text" autocomplete="username" required />
+    </label>
+    <label>Contraseña
+      <input id="login-pass" type="password" autocomplete="current-password" required />
+    </label>
+    <div id="login-error" class="login-error" hidden></div>
+    <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+  </form>
+</div>
+
+<!-- ---------- Shell del panel ---------- -->
+<div id="app-shell" class="app-shell" hidden>
+  <aside class="sidebar">
+    <div class="sidebar-brand">🛠️ <span>Jair Comercial</span></div>
+    <nav class="sidebar-nav" id="sidebar-nav">
+      <button class="nav-item nav-item-gestor active" data-view="dashboard"><span>🏠</span>Escritorio</button>
+      <button class="nav-item nav-item-gestor" data-view="productos" data-perm="productos"><span>📦</span>Productos</button>
+      <button class="nav-item nav-item-gestor" data-view="categorias" data-perm="categorias"><span>🗂️</span>Categorías</button>
+      <button class="nav-item nav-item-gestor" data-view="ofertas" data-perm="productos"><span>🔥</span>Ofertas</button>
+      <button class="nav-item nav-item-gestor" data-view="ventas" data-perm="ventas">
+        <span>🧾</span>Ventas
+        <span id="badge-ventas-pendientes" class="nav-badge" hidden>0</span>
+      </button>
+      <button class="nav-item nav-item-gestor" data-view="reportes" data-perm="ventas"><span>📊</span>Reportes</button>
+      <button class="nav-item nav-item-gestor" data-view="gastos" data-perm="gastos"><span>💸</span>Gastos</button>
+      <button class="nav-item nav-item-gestor" data-view="usuarios" data-perm="usuarios"><span>👥</span>Usuarios</button>
+      <button class="nav-item nav-item-gestor" data-view="parametros" data-perm="parametros"><span>⚙️</span>Ajustes</button>
+
+      <button class="nav-item nav-item-vendedor" data-view="vendedor-panel" hidden><span>🏠</span>Mi panel</button>
+      <button class="nav-item nav-item-vendedor" data-view="vendedor-nueva-venta" hidden><span>➕</span>Nueva venta</button>
+      <button class="nav-item nav-item-vendedor" data-view="vendedor-mis-ventas" hidden><span>🧾</span>Mis ventas</button>
+      <button class="nav-item nav-item-vendedor" data-view="vendedor-perfil" hidden>
+        <span>💳</span>Mi perfil
+        <span id="badge-perfil-incompleto" class="nav-badge" hidden>!</span>
+      </button>
+    </nav>
+    <a href="/" target="_blank" class="sidebar-link">↗ Ver sitio público</a>
+    <div class="sidebar-user">
+      <div class="sidebar-user-avatar" id="sidebar-user-avatar">A</div>
+      <div class="sidebar-user-info">
+        <div id="sidebar-user-name">—</div>
+        <button id="btn-logout" class="sidebar-logout">Cerrar sesión</button>
+      </div>
+    </div>
+  </aside>
+
+  <div class="main-col">
+    <header class="topbar">
+      <button id="mobile-nav-toggle" class="mobile-nav-toggle" aria-label="Menú">☰</button>
+      <h2 id="view-title">Escritorio</h2>
+      <button id="btn-mi-cuenta" class="btn btn-ghost btn-sm">Mi cuenta</button>
+    </header>
+    <main id="view-container" class="view-container"></main>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container"></div>
+
+<!-- ---------- Modal genérico ---------- -->
+<div id="modal-overlay" class="admin-modal-overlay" hidden>
+  <div class="admin-modal" id="admin-modal"></div>
+</div>
+
+<script src="/admin/js/api.js"></script>
+<script src="/admin/js/toast.js"></script>
+<script src="/admin/js/editor.js"></script>
+<script src="/admin/js/modal.js"></script>
+<script src="/admin/js/ui/dashboard.js"></script>
+<script src="/admin/js/ui/productos.js"></script>
+<script src="/admin/js/ui/ofertas.js"></script>
+<script src="/admin/js/ui/categorias.js"></script>
+<script src="/admin/js/ui/usuarios.js"></script>
+<script src="/admin/js/ui/parametros.js"></script>
+<script src="/admin/js/ui/cuenta.js"></script>
+<script src="/admin/js/ui/ventas.js"></script>
+<script src="/admin/js/ui/reportes.js"></script>
+<script src="/admin/js/ui/gastos.js"></script>
+<script src="/admin/js/ui/vendedor.js"></script>
+<script src="/admin/js/app.js"></script>
+</body>
+</html>

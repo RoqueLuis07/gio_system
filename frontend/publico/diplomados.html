@@ -138,6 +138,22 @@
     display:block; text-align:center; padding:11px; font-size:12.5px; font-weight:600; color:var(--teal); text-decoration:none;
     background:rgba(0,0,0,0.4); border-top:1px solid rgba(255,255,255,0.1);
   }
+
+  /* En celular, la mayoría de los navegadores no pueden mostrar el PDF incrustado
+     (queda una caja vacía) — se muestra en su lugar la foto de portada con un
+     botón grande para abrir el PDF completo. */
+  .hero-pdf-mobile-card{ display:none; }
+  .hero-pdf-mobile-img{ width:100%; flex:1 1 auto; min-height:0; object-fit:cover; object-position:top; display:block; }
+  .hero-pdf-mobile-placeholder{
+    width:100%; flex:1 1 auto; min-height:0; display:flex; align-items:center; justify-content:center; font-size:56px;
+    background:linear-gradient(160deg, #1b2350, #2a1a4a 55%, #3a1440);
+  }
+  @media (max-width:760px){
+    .hero-pdf-viewer{ height:min(80vh, 560px); min-height:460px; }
+    .hero-pdf-viewer iframe, .hero-pdf-fallback{ display:none; }
+    .hero-pdf-mobile-card{ display:flex; flex-direction:column; position:absolute; inset:0; }
+    .hero-pdf-mobile-card .btn-comprar{ flex:0 0 auto; margin:0; border-radius:0; width:100%; padding:16px; font-size:15px; justify-content:center; box-shadow:none; }
+  }
   .hero-pdf-side{
     background:linear-gradient(160deg, #1b2350, #2a1a4a 55%, #3a1440); border:1px solid var(--border); border-radius:20px;
     padding:26px 24px; display:flex; flex-direction:column; gap:10px;
@@ -340,11 +356,19 @@
 
   function heroPdfHtml(p) {
     var pdfEmbed = p.brochurePdfUrl + '#toolbar=0&navpanes=0&scrollbar=0';
+    var fotoMobile = p.fotoUrl
+      ? '<img class="hero-pdf-mobile-img" src="' + p.fotoUrl + '" alt="" />'
+      : '<div class="hero-pdf-mobile-placeholder">📄</div>';
+
     return (
       '<div class="hero-pdf reveal">' +
         '<div class="hero-pdf-viewer">' +
           '<iframe src="' + pdfEmbed + '" title="Broshure ' + escapeHtml(p.nombre) + '"></iframe>' +
           '<a class="hero-pdf-fallback" href="' + p.brochurePdfUrl + '" target="_blank" rel="noopener">🔍 Abrir en pantalla completa</a>' +
+          '<div class="hero-pdf-mobile-card">' +
+            fotoMobile +
+            '<a class="btn-comprar" href="' + p.brochurePdfUrl + '" target="_blank" rel="noopener">📄 Ver Broshure Completo (PDF)</a>' +
+          '</div>' +
         '</div>' +
         '<div class="hero-pdf-side">' +
           '<span class="card-badge">Diplomado en:</span>' +
